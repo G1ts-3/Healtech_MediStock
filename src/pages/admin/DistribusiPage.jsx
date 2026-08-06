@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Calendar, ChevronDown, Truck, Package, CheckCircle2, Clock, ArrowRight } from 'lucide-react';
+import { Calendar, ChevronDown, Truck, Package, CheckCircle2, Clock, ArrowRight, Search } from 'lucide-react';
+import DatePickerButton from '../../components/common/DatePickerButton';
 
 const statusConfig = {
   diproses: { label: 'Diproses', color: 'bg-yellow-100 text-yellow-700', icon: Clock, dotColor: 'bg-warning' },
@@ -13,14 +14,27 @@ const statusOrder = ['diproses', 'dikirim', 'diterima'];
 export default function DistribusiPage() {
   const { distributions, medicines, suppliers, updateDistributionStatus, currentRole } = useApp();
   const [filter, setFilter] = useState('semua');
+  const [searchQuery, setSearchQuery] = useState('');
   const [expandedId, setExpandedId] = useState(null);
 
   const today = new Date();
   const dateStr = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-  const filtered = filter === 'semua'
-    ? distributions
-    : distributions.filter(d => d.status === filter);
+  const filtered = distributions.filter(dist => {
+    const med = medicines.find(m => m.id === dist.medicineId);
+    const supplier = suppliers.find(s => s.id === dist.fromSupplier);
+    const matchesFilter = filter === 'semua' || dist.status === filter;
+
+    const query = searchQuery.toLowerCase();
+    const matchesSearch = !searchQuery ||
+      dist.id.toLowerCase().includes(query) ||
+      dist.medicineId.toLowerCase().includes(query) ||
+      (med && med.name.toLowerCase().includes(query)) ||
+      (supplier && supplier.name.toLowerCase().includes(query)) ||
+      dist.toUnit.toLowerCase().includes(query);
+
+    return matchesFilter && matchesSearch;
+  });
 
   const getNextStatus = (current) => {
     const idx = statusOrder.indexOf(current);
@@ -35,31 +49,42 @@ export default function DistribusiPage() {
           <h1 className="text-2xl font-bold text-text">Tracking Distribusi</h1>
           <p className="text-sm text-gray-500 mt-1">Pantau dan kelola status distribusi obat dari supplier ke gudang.</p>
         </div>
-        <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
-          <Calendar className="w-4 h-4 text-gray-500" />
-          <span className="text-sm font-medium text-text">{dateStr}</span>
-          <ChevronDown className="w-4 h-4 text-gray-400" />
-        </div>
+        <DatePickerButton />
       </div>
 
-      {/* Filter tabs */}
-      <div className="flex gap-2">
-        {['semua', 'diproses', 'dikirim', 'diterima'].map(tab => (
-          <button
-            key={tab}
-            onClick={() => setFilter(tab)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              filter === tab
-                ? 'bg-primary text-white shadow-md'
-                : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
-            }`}
-          >
-            {tab === 'semua' ? 'Semua' : tab.charAt(0).toUpperCase() + tab.slice(1)}
-            <span className="ml-1.5 text-xs opacity-70">
-              ({tab === 'semua' ? distributions.length : distributions.filter(d => d.status === tab).length})
-            </span>
-          </button>
-        ))}
+      {/* Filter tabs & Search bar */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+        {/* Filter tabs */}
+        <div className="flex gap-2 flex-wrap">
+          {['semua', 'diproses', 'dikirim', 'diterima'].map(tab => (
+            <button
+              key={tab}
+              onClick={() => setFilter(tab)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                filter === tab
+                  ? 'bg-primary text-white shadow-md'
+                  : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+              }`}
+            >
+              {tab === 'semua' ? 'Semua' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+              <span className="ml-1.5 text-xs opacity-70">
+                ({tab === 'semua' ? distributions.length : distributions.filter(d => d.status === tab).length})
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Search Bar */}
+        <div className="relative w-full sm:w-80">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Cari ID distribusi, nama obat, supplier, unit..."
+            className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light shadow-sm transition-all"
+          />
+        </div>
       </div>
 
       {/* Distribution cards */}

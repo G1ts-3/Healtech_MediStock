@@ -1,6 +1,7 @@
 import { Search, Bell, ChevronDown, User } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const roleLabels = {
   admin: 'Akmal Admin',
@@ -17,27 +18,25 @@ const roleSubtitles = {
 export default function Navbar() {
   const { currentRole, notifications, clearNotifications } = useApp();
   const [showNotif, setShowNotif] = useState(false);
+  const location = useLocation();
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  const today = new Date();
-  const dateStr = today.toLocaleDateString('id-ID', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
+  const isAdminDashboard = location.pathname === '/admin/dashboard';
 
   return (
     <nav className="sticky top-0 z-30 bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
       {/* Page title area - filled by page content */}
       <div className="flex items-center gap-4 flex-1">
-        <div className="relative max-w-md w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Cari obat, supplier, kategori, ..."
-            className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light focus:border-transparent transition-all"
-          />
-        </div>
+        {!isAdminDashboard && (
+          <div className="relative max-w-md w-full">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Cari obat, supplier, kategori, ..."
+              className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light focus:border-transparent transition-all"
+            />
+          </div>
+        )}
       </div>
 
       <div className="flex items-center gap-5">

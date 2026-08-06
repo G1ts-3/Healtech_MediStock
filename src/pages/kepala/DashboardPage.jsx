@@ -1,12 +1,10 @@
 import { useApp } from '../../context/AppContext';
 import { Calendar, ChevronDown, Package, CheckCircle, AlertTriangle, Clock, User } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import DatePickerButton from '../../components/common/DatePickerButton';
 
 export default function KepalaDashboard() {
   const { medicines, stats, restockRequests, distributions, getStockStatus } = useApp();
-
-  const today = new Date();
-  const dateStr = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
   // Stock by category data
   const categoryData = medicines.reduce((acc, m) => {
@@ -38,11 +36,7 @@ export default function KepalaDashboard() {
             <p className="text-sm text-gray-500">Ringkasan status persediaan dan permintaan yang memerlukan persetujuan.</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
-          <Calendar className="w-4 h-4 text-gray-500" />
-          <span className="text-sm font-medium text-text">{dateStr}</span>
-          <ChevronDown className="w-4 h-4 text-gray-400" />
-        </div>
+        <DatePickerButton />
       </div>
 
       {/* Summary cards */}

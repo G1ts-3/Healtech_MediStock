@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Calendar, ChevronDown, Plus, FileSpreadsheet, Trash2, Eye, X, Search } from 'lucide-react';
+import { Calendar, ChevronDown, Plus, FileSpreadsheet, Trash2, Eye, X, Search, SortAsc, SortDesc, ArrowUpDown } from 'lucide-react';
+import DatePickerButton from '../../components/common/DatePickerButton';
 
 export default function DataObatPage() {
   const { medicines, addMedicine, updateMedicine, deleteMedicine, getStockStatus, getFEFOStatus, suppliers } = useApp();
@@ -10,6 +11,10 @@ export default function DataObatPage() {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [detailMedicine, setDetailMedicine] = useState(null);
 
+  // Sorting state
+  const [sortField, setSortField] = useState('name');
+  const [sortDir, setSortDir] = useState('asc');
+
   const today = new Date();
   const dateStr = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -18,6 +23,61 @@ export default function DataObatPage() {
     m.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
     m.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const sorted = [...filtered].sort((a, b) => {
+    let valA, valB;
+    if (sortField === 'name') {
+      valA = a.name.toLowerCase();
+      valB = b.name.toLowerCase();
+      return sortDir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+    }
+    if (sortField === 'id') {
+      valA = a.id.toLowerCase();
+      valB = b.id.toLowerCase();
+      return sortDir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+    }
+    if (sortField === 'stock') {
+      valA = Number(a.currentStock);
+      valB = Number(b.currentStock);
+      return sortDir === 'asc' ? valA - valB : valB - valA;
+    }
+    if (sortField === 'stockStatus') {
+      const order = { kritis: 0, menipis: 1, aman: 2 };
+      valA = order[getStockStatus(a)] ?? 2;
+      valB = order[getStockStatus(b)] ?? 2;
+      return sortDir === 'asc' ? valA - valB : valB - valA;
+    }
+    if (sortField === 'expiryDate') {
+      valA = new Date(a.expiryDate).getTime();
+      valB = new Date(b.expiryDate).getTime();
+      return sortDir === 'asc' ? valA - valB : valB - valA;
+    }
+    if (sortField === 'fefoStatus') {
+      const fefoOrder = { kritis: 0, warning: 1, aman: 2 };
+      valA = fefoOrder[getFEFOStatus(a)] ?? 2;
+      valB = fefoOrder[getFEFOStatus(b)] ?? 2;
+      return sortDir === 'asc' ? valA - valB : valB - valA;
+    }
+    return 0;
+  });
+
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDir(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDir('asc');
+    }
+  };
+
+  const renderSortIcon = (field) => {
+    if (sortField !== field) {
+      return <ArrowUpDown className="w-3.5 h-3.5 text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity" />;
+    }
+    return sortDir === 'asc'
+      ? <SortAsc className="w-3.5 h-3.5 text-primary font-bold" />
+      : <SortDesc className="w-3.5 h-3.5 text-primary font-bold" />;
+  };
 
   const getFEFOLabel = (status) => {
     if (status === 'kritis') return { text: 'KRITIS', cls: 'bg-red-100 text-error' };
@@ -64,11 +124,7 @@ export default function DataObatPage() {
             <p className="text-sm text-gray-500">Pantau status persediaan dan tingkat prioritas kadaluarsa secara terintegrasi.</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
-          <Calendar className="w-4 h-4 text-gray-500" />
-          <span className="text-sm font-medium text-text">{dateStr}</span>
-          <ChevronDown className="w-4 h-4 text-gray-400" />
-        </div>
+        <DatePickerButton />
       </div>
 
       {/* Summary cards */}
@@ -91,17 +147,37 @@ export default function DataObatPage() {
         </div>
       </div>
 
-      {/* Action buttons */}
-      <div className="flex items-center justify-between">
-        <div className="relative max-w-xs w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari nama obat, kode, kategori..."
-            className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light"
-          />
+      {/* Action buttons & Sort toolbar */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3 flex-1 max-w-xl">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Cari nama obat, kode, kategori..."
+              className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light"
+            />
+          </div>
+          <select
+            value={`${sortField}-${sortDir}`}
+            onChange={(e) => {
+              const [field, dir] = e.target.value.split('-');
+              setSortField(field);
+              setSortDir(dir);
+            }}
+            className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-light shrink-0 cursor-pointer"
+          >
+            <option value="name-asc">Urutkan: Nama (A - Z)</option>
+            <option value="name-desc">Urutkan: Nama (Z - A)</option>
+            <option value="fefoStatus-asc">Urutkan: Status FEFO (Kritis Dahulu)</option>
+            <option value="stockStatus-asc">Urutkan: Status Stok (Kritis Dahulu)</option>
+            <option value="stock-asc">Urutkan: Stok (Terkecil)</option>
+            <option value="stock-desc">Urutkan: Stok (Terbanyak)</option>
+            <option value="expiryDate-asc">Urutkan: Exp Date (Terdekat)</option>
+            <option value="id-asc">Urutkan: Kode Obat</option>
+          </select>
         </div>
         <div className="flex gap-3">
           <button className="flex items-center gap-2 px-4 py-2 bg-secondary text-white text-sm font-medium rounded-lg hover:bg-secondary/90 transition-colors shadow-sm">
@@ -130,17 +206,31 @@ export default function DataObatPage() {
         <table className="w-full">
           <thead>
             <tr className="bg-gray-50/50 border-b border-gray-100">
-              <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Kode Obat</th>
-              <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">Nama Obat</th>
+              <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3 cursor-pointer select-none group" onClick={() => handleSort('id')}>
+                <div className="flex items-center gap-1.5">Kode Obat {renderSortIcon('id')}</div>
+              </th>
+              <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none group" onClick={() => handleSort('name')}>
+                <div className="flex items-center gap-1.5">Nama Obat {renderSortIcon('name')}</div>
+              </th>
               <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">No Batch</th>
-              <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">Stok Sisa</th>
-              <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">Exp Date</th>
-              <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">Status FEFO</th>
+              <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none group" onClick={() => handleSort('stock')}>
+                <div className="flex items-center gap-1.5">Stok Sisa {renderSortIcon('stock')}</div>
+              </th>
+              <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none group" onClick={() => handleSort('stockStatus')}>
+                <div className="flex items-center justify-center gap-1.5">Status Stok {renderSortIcon('stockStatus')}</div>
+              </th>
+              <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none group" onClick={() => handleSort('expiryDate')}>
+                <div className="flex items-center gap-1.5">Exp Date {renderSortIcon('expiryDate')}</div>
+              </th>
+              <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3 cursor-pointer select-none group" onClick={() => handleSort('fefoStatus')}>
+                <div className="flex items-center justify-center gap-1.5">Status FEFO {renderSortIcon('fefoStatus')}</div>
+              </th>
               <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">Aksi</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map((med) => {
+            {sorted.map((med) => {
+              const stockStatus = getStockStatus(med);
               const fefoStatus = getFEFOStatus(med);
               const fefo = getFEFOLabel(fefoStatus);
               const expDate = new Date(med.expiryDate);
@@ -153,6 +243,21 @@ export default function DataObatPage() {
                   <td className="px-4 py-4 text-sm font-semibold text-text">{med.name}</td>
                   <td className="px-4 py-4 text-sm text-gray-500">{med.batchNumber}</td>
                   <td className="px-4 py-4 text-sm font-medium text-text">{med.currentStock} {med.unit}</td>
+                  <td className="px-4 py-4 text-center">
+                    {stockStatus === 'kritis' ? (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-error">
+                        <span className="w-2 h-2 rounded-full bg-error" />Kritis
+                      </span>
+                    ) : stockStatus === 'menipis' ? (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
+                        <span className="w-2 h-2 rounded-full bg-warning" />Menipis
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-success">
+                        <span className="w-2 h-2 rounded-full bg-success" />Aman
+                      </span>
+                    )}
+                  </td>
                   <td className={`px-4 py-4 text-sm font-semibold ${expColor}`}>{expDateStr}</td>
                   <td className="px-4 py-4 text-center">
                     <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${fefo.cls}`}>
@@ -190,6 +295,7 @@ export default function DataObatPage() {
                 ['Kategori', detailMedicine.category],
                 ['Batch', detailMedicine.batchNumber],
                 ['Stok', `${detailMedicine.currentStock} ${detailMedicine.unit}`],
+                ['Status Stok', getStockStatus(detailMedicine).toUpperCase()],
                 ['Min Stok', detailMedicine.minStock],
                 ['Maks Stok', detailMedicine.maxStock],
                 ['Pemakaian Harian', `${detailMedicine.dailyUsage} ${detailMedicine.unit}/hari`],
@@ -219,7 +325,7 @@ export default function DataObatPage() {
         <MedicineFormModal
           medicine={editingMedicine}
           suppliers={suppliers}
-          onSave={handleSave}
+          onSave={handleSave}   
           onClose={() => { setShowModal(false); setEditingMedicine(null); }}
         />
       )}

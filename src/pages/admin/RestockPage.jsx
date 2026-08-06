@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Calendar, ChevronDown, AlertTriangle, Volume2, VolumeX, Search, SendHorizonal } from 'lucide-react';
+import DatePickerButton from '../../components/common/DatePickerButton';
 
 export default function RestockPage() {
   const { medicines, getStockStatus, getDaysUntilStockout, getRecommendedQty, createRestockRequest, restockRequests, suppliers } = useApp();
@@ -66,11 +67,7 @@ export default function RestockPage() {
           <h1 className="text-2xl font-bold text-text">Permintaan Restock & Smart Calculator</h1>
           <p className="text-sm text-gray-500 mt-1">Hitung rekomendasi pengadaan barang secara otomatis dan kelola pengajuan ke Kepala Farmasi</p>
         </div>
-        <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
-          <Calendar className="w-4 h-4 text-gray-500" />
-          <span className="text-sm font-medium text-text">{dateStr}</span>
-          <ChevronDown className="w-4 h-4 text-gray-400" />
-        </div>
+        <DatePickerButton />
       </div>
 
       {/* Clinical Alert Banner */}
@@ -245,13 +242,18 @@ export default function RestockPage() {
                     </div>
                     <div className="flex items-center gap-4 mt-2">
                       <span className="text-xs text-gray-500">Qty: <strong>{req.requestedQty}</strong></span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        req.urgency === 'kritis' ? 'bg-red-100 text-error' :
-                        req.urgency === 'menipis' ? 'bg-yellow-100 text-yellow-700' :
-                        'bg-green-100 text-success'
-                      }`}>
-                        {req.urgency}
-                      </span>
+                      {(() => {
+                        const currentUrgency = med ? getStockStatus(med) : req.urgency;
+                        return (
+                          <span className={`text-xs px-2 py-0.5 rounded-full ${
+                            currentUrgency === 'kritis' ? 'bg-red-100 text-error' :
+                            currentUrgency === 'menipis' ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-green-100 text-success'
+                          }`}>
+                            {currentUrgency}
+                          </span>
+                        );
+                      })()}
                     </div>
                     {req.notes && <p className="text-xs text-gray-400 mt-2 italic">{req.notes}</p>}
                   </div>

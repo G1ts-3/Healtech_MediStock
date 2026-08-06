@@ -1,5 +1,6 @@
 import { useApp } from '../../context/AppContext';
 import { Calendar, ChevronDown, Truck, Package, CheckCircle2, Clock } from 'lucide-react';
+import DatePickerButton from '../../components/common/DatePickerButton';
 
 const statusConfig = {
   diproses: { label: 'Diproses', color: 'bg-yellow-100 text-yellow-700' },
@@ -9,9 +10,6 @@ const statusConfig = {
 
 export default function GudangDashboard() {
   const { distributions, medicines, suppliers } = useApp();
-
-  const today = new Date();
-  const dateStr = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
   const diproses = distributions.filter(d => d.status === 'diproses').length;
   const dikirim = distributions.filter(d => d.status === 'dikirim').length;
@@ -30,11 +28,7 @@ export default function GudangDashboard() {
             <p className="text-sm text-gray-500">Kelola status distribusi obat dari supplier ke gudang.</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
-          <Calendar className="w-4 h-4 text-gray-500" />
-          <span className="text-sm font-medium text-text">{dateStr}</span>
-          <ChevronDown className="w-4 h-4 text-gray-400" />
-        </div>
+        <DatePickerButton />
       </div>
 
       {/* Summary cards */}

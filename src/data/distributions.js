@@ -1,0 +1,108 @@
+const distributions = [
+  {
+    id: 'DST-7789',
+    medicineId: 'OBT-001',
+    quantity: 500,
+    fromSupplier: 'SUP-001',
+    toUnit: 'Gudang Utama',
+    status: 'diterima',
+    requestDate: '2026-06-20',
+    statusUpdates: [
+      { status: 'diproses', date: '2026-06-20', time: '09:00', updatedBy: 'Admin Farmasi' },
+      { status: 'dikirim', date: '2026-06-22', time: '14:30', updatedBy: 'Gudang Farmasi' },
+      { status: 'diterima', date: '2026-06-24', time: '10:15', updatedBy: 'Gudang Farmasi' },
+    ],
+  },
+  {
+    id: 'DST-7790',
+    medicineId: 'OBT-005',
+    quantity: 1000,
+    fromSupplier: 'SUP-002',
+    toUnit: 'Gudang Utama',
+    status: 'dikirim',
+    requestDate: '2026-06-25',
+    statusUpdates: [
+      { status: 'diproses', date: '2026-06-25', time: '08:30', updatedBy: 'Admin Farmasi' },
+      { status: 'dikirim', date: '2026-06-27', time: '11:00', updatedBy: 'Gudang Farmasi' },
+    ],
+  },
+  {
+    id: 'DST-7791',
+    medicineId: 'OBT-009',
+    quantity: 300,
+    fromSupplier: 'SUP-003',
+    toUnit: 'Gudang Utama',
+    status: 'diproses',
+    requestDate: '2026-06-28',
+    statusUpdates: [
+      { status: 'diproses', date: '2026-06-28', time: '10:00', updatedBy: 'Admin Farmasi' },
+    ],
+  },
+  {
+    id: 'DST-7792',
+    medicineId: 'OBT-018',
+    quantity: 400,
+    fromSupplier: 'SUP-002',
+    toUnit: 'Gudang Utama',
+    status: 'diproses',
+    requestDate: '2026-06-28',
+    statusUpdates: [
+      { status: 'diproses', date: '2026-06-28', time: '10:30', updatedBy: 'Admin Farmasi' },
+    ],
+  },
+  {
+    id: 'DST-7793',
+    medicineId: 'OBT-025',
+    quantity: 350,
+    fromSupplier: 'SUP-002',
+    toUnit: 'Gudang Utama',
+    status: 'dikirim',
+    requestDate: '2026-06-26',
+    statusUpdates: [
+      { status: 'diproses', date: '2026-06-26', time: '09:15', updatedBy: 'Admin Farmasi' },
+      { status: 'dikirim', date: '2026-06-28', time: '13:45', updatedBy: 'Gudang Farmasi' },
+    ],
+  },
+  {
+    id: 'DST-7794',
+    medicineId: 'OBT-011',
+    quantity: 500,
+    fromSupplier: 'SUP-003',
+    toUnit: 'Gudang Utama',
+    status: 'diterima',
+    requestDate: '2026-06-18',
+    statusUpdates: [
+      { status: 'diproses', date: '2026-06-18', time: '08:00', updatedBy: 'Admin Farmasi' },
+      { status: 'dikirim', date: '2026-06-20', time: '15:20', updatedBy: 'Gudang Farmasi' },
+      { status: 'diterima', date: '2026-06-23', time: '09:30', updatedBy: 'Gudang Farmasi' },
+    ],
+  },
+  {
+    id: 'DST-7795',
+    medicineId: 'OBT-007',
+    quantity: 400,
+    fromSupplier: 'SUP-001',
+    toUnit: 'Gudang Utama',
+    status: 'diproses',
+    requestDate: '2026-06-29',
+    statusUpdates: [
+      { status: 'diproses', date: '2026-06-29', time: '11:00', updatedBy: 'Admin Farmasi' },
+    ],
+  },
+  {
+    id: 'DST-7796',
+    medicineId: 'OBT-010',
+    quantity: 800,
+    fromSupplier: 'SUP-005',
+    toUnit: 'Gudang Utama',
+    status: 'diterima',
+    requestDate: '2026-06-15',
+    statusUpdates: [
+      { status: 'diproses', date: '2026-06-15', time: '09:30', updatedBy: 'Admin Farmasi' },
+      { status: 'dikirim', date: '2026-06-17', time: '10:00', updatedBy: 'Gudang Farmasi' },
+      { status: 'diterima', date: '2026-06-18', time: '14:00', updatedBy: 'Gudang Farmasi' },
+    ],
+  },
+];
+
+export default distributions;

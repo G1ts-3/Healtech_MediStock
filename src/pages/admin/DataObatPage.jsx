@@ -1,0 +1,369 @@
+import { useState } from 'react';
+import { useApp } from '../../context/AppContext';
+import { Calendar, ChevronDown, Plus, FileSpreadsheet, Trash2, Eye, X, Search } from 'lucide-react';
+
+export default function DataObatPage() {
+  const { medicines, addMedicine, updateMedicine, deleteMedicine, getStockStatus, getFEFOStatus, suppliers } = useApp();
+  const [showModal, setShowModal] = useState(false);
+  const [editingMedicine, setEditingMedicine] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [detailMedicine, setDetailMedicine] = useState(null);
+
+  const today = new Date();
+  const dateStr = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  const filtered = medicines.filter(m =>
+    m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    m.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    m.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const getFEFOLabel = (status) => {
+    if (status === 'kritis') return { text: 'KRITIS', cls: 'bg-red-100 text-error' };
+    if (status === 'warning') return { text: 'WARNING', cls: 'bg-yellow-100 text-yellow-700' };
+    return { text: 'Aman', cls: 'bg-green-100 text-success' };
+  };
+
+  const handleAdd = () => {
+    setEditingMedicine(null);
+    setShowModal(true);
+  };
+
+  const handleEdit = (med) => {
+    setEditingMedicine(med);
+    setShowModal(true);
+  };
+
+  const handleDelete = (id) => {
+    deleteMedicine(id);
+    setDeleteConfirm(null);
+  };
+
+  const handleSave = (formData) => {
+    if (editingMedicine) {
+      updateMedicine(editingMedicine.id, formData);
+    } else {
+      addMedicine({
+        ...formData,
+        monthlyUsageHistory: Array(12).fill(Math.floor(formData.dailyUsage * 30)),
+      });
+    }
+    setShowModal(false);
+    setEditingMedicine(null);
+  };
+
+  return (
+    <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
+      {/* Header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-text">Monitoring Stok</h1>
+          <div className="mt-2">
+            <h2 className="text-lg font-bold text-text">Monitoring Persediaan Obat & FEFO Priority</h2>
+            <p className="text-sm text-gray-500">Pantau status persediaan dan tingkat prioritas kadaluarsa secara terintegrasi.</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
+          <Calendar className="w-4 h-4 text-gray-500" />
+          <span className="text-sm font-medium text-text">{dateStr}</span>
+          <ChevronDown className="w-4 h-4 text-gray-400" />
+        </div>
+      </div>
+
+      {/* Summary cards */}
+      <div className="grid grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+          <p className="text-xs text-gray-500 mb-1">Total Jenis Obat</p>
+          <p className="text-2xl font-bold text-text">{medicines.length.toLocaleString('id-ID')} <span className="text-sm font-normal text-gray-400">Item</span></p>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+          <div className="flex items-center gap-1.5 mb-1"><span className="w-2.5 h-2.5 rounded-full bg-success" /><p className="text-xs text-success font-medium">Stok Aman</p></div>
+          <p className="text-2xl font-bold text-text">{medicines.filter(m => getStockStatus(m) === 'aman').length.toLocaleString('id-ID')} <span className="text-sm font-normal text-gray-400">Item</span></p>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+          <div className="flex items-center gap-1.5 mb-1"><span className="w-2.5 h-2.5 rounded-full bg-warning" /><p className="text-xs text-warning font-medium">Menipis / Warning</p></div>
+          <p className="text-2xl font-bold text-text">{medicines.filter(m => getStockStatus(m) === 'menipis').length.toLocaleString('id-ID')} <span className="text-sm font-normal text-gray-400">Item</span></p>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+          <div className="flex items-center gap-1.5 mb-1"><span className="w-2.5 h-2.5 rounded-full bg-error" /><p className="text-xs text-error font-medium">Kadaluarsa</p></div>
+          <p className="text-2xl font-bold text-text">{medicines.filter(m => getFEFOStatus(m) === 'kritis').length.toLocaleString('id-ID')} <span className="text-sm font-normal text-gray-400">Item</span></p>
+        </div>
+      </div>
+
+      {/* Action buttons */}
+      <div className="flex items-center justify-between">
+        <div className="relative max-w-xs w-full">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Cari nama obat, kode, kategori..."
+            className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light"
+          />
+        </div>
+        <div className="flex gap-3">
+          <button className="flex items-center gap-2 px-4 py-2 bg-secondary text-white text-sm font-medium rounded-lg hover:bg-secondary/90 transition-colors shadow-sm">
+            <FileSpreadsheet className="w-4 h-4" />
+            Konversi xls
+          </button>
+          <button
+            onClick={() => setDeleteConfirm('bulk')}
+            className="flex items-center gap-2 px-4 py-2 bg-error text-white text-sm font-medium rounded-lg hover:bg-error/90 transition-colors shadow-sm"
+          >
+            <Trash2 className="w-4 h-4" />
+            Hapus Obat
+          </button>
+          <button
+            onClick={handleAdd}
+            className="flex items-center gap-2 px-4 py-2 bg-text text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            Tambah Obat
+          </button>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="bg-gray-50/50 border-b border-gray-100">
+              <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Kode Obat</th>
+              <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">Nama Obat</th>
+              <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">No Batch</th>
+              <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">Stok Sisa</th>
+              <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">Exp Date</th>
+              <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">Status FEFO</th>
+              <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wider px-4 py-3">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((med) => {
+              const fefoStatus = getFEFOStatus(med);
+              const fefo = getFEFOLabel(fefoStatus);
+              const expDate = new Date(med.expiryDate);
+              const expDateStr = expDate.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+              const expColor = fefoStatus === 'kritis' ? 'text-error' : fefoStatus === 'warning' ? 'text-warning' : 'text-success';
+
+              return (
+                <tr key={med.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                  <td className="px-6 py-4 text-sm text-gray-500">{med.id}</td>
+                  <td className="px-4 py-4 text-sm font-semibold text-text">{med.name}</td>
+                  <td className="px-4 py-4 text-sm text-gray-500">{med.batchNumber}</td>
+                  <td className="px-4 py-4 text-sm font-medium text-text">{med.currentStock} {med.unit}</td>
+                  <td className={`px-4 py-4 text-sm font-semibold ${expColor}`}>{expDateStr}</td>
+                  <td className="px-4 py-4 text-center">
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${fefo.cls}`}>
+                      <span className={`w-2 h-2 rounded-full ${fefoStatus === 'kritis' ? 'bg-error' : fefoStatus === 'warning' ? 'bg-warning' : 'bg-success'}`} />
+                      {fefo.text}
+                    </span>
+                  </td>
+                  <td className="px-4 py-4 text-center">
+                    <button
+                      onClick={() => setDetailMedicine(med)}
+                      className="text-sm text-primary hover:text-primary-dark font-medium hover:underline transition-colors"
+                    >
+                      Detail
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Detail Modal */}
+      {detailMedicine && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={() => setDetailMedicine(null)}>
+          <div className="bg-white rounded-2xl w-full max-w-lg p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-text">Detail Obat</h3>
+              <button onClick={() => setDetailMedicine(null)} className="p-1 hover:bg-gray-100 rounded-lg"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="space-y-3">
+              {[
+                ['Kode', detailMedicine.id],
+                ['Nama', detailMedicine.name],
+                ['Kategori', detailMedicine.category],
+                ['Batch', detailMedicine.batchNumber],
+                ['Stok', `${detailMedicine.currentStock} ${detailMedicine.unit}`],
+                ['Min Stok', detailMedicine.minStock],
+                ['Maks Stok', detailMedicine.maxStock],
+                ['Pemakaian Harian', `${detailMedicine.dailyUsage} ${detailMedicine.unit}/hari`],
+                ['Kadaluarsa', new Date(detailMedicine.expiryDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })],
+                ['Harga Satuan', `Rp ${detailMedicine.unitPrice.toLocaleString('id-ID')}`],
+              ].map(([label, value]) => (
+                <div key={label} className="flex items-center justify-between py-2 border-b border-gray-50">
+                  <span className="text-sm text-gray-500">{label}</span>
+                  <span className="text-sm font-medium text-text">{value}</span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 flex gap-3">
+              <button onClick={() => { handleEdit(detailMedicine); setDetailMedicine(null); }} className="flex-1 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-dark transition-colors">
+                Edit
+              </button>
+              <button onClick={() => { setDeleteConfirm(detailMedicine.id); setDetailMedicine(null); }} className="flex-1 py-2 bg-error text-white text-sm font-medium rounded-lg hover:bg-error/90 transition-colors">
+                Hapus
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add/Edit Modal */}
+      {showModal && (
+        <MedicineFormModal
+          medicine={editingMedicine}
+          suppliers={suppliers}
+          onSave={handleSave}
+          onClose={() => { setShowModal(false); setEditingMedicine(null); }}
+        />
+      )}
+
+      {/* Delete Confirmation */}
+      {deleteConfirm && deleteConfirm !== 'bulk' && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl text-center">
+            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Trash2 className="w-6 h-6 text-error" />
+            </div>
+            <h3 className="text-lg font-bold text-text mb-2">Hapus Obat?</h3>
+            <p className="text-sm text-gray-500 mb-5">Data obat yang dihapus tidak dapat dikembalikan.</p>
+            <div className="flex gap-3">
+              <button onClick={() => setDeleteConfirm(null)} className="flex-1 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">Batal</button>
+              <button onClick={() => handleDelete(deleteConfirm)} className="flex-1 py-2 bg-error text-white text-sm font-medium rounded-lg hover:bg-error/90 transition-colors">Hapus</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* Medicine Form Modal Component */
+function MedicineFormModal({ medicine, suppliers, onSave, onClose }) {
+  const [form, setForm] = useState({
+    name: medicine?.name || '',
+    category: medicine?.category || 'Analgesik',
+    unit: medicine?.unit || 'Tablet',
+    currentStock: medicine?.currentStock || 0,
+    minStock: medicine?.minStock || 100,
+    maxStock: medicine?.maxStock || 1000,
+    dailyUsage: medicine?.dailyUsage || 10,
+    seasonalMultiplier: medicine?.seasonalMultiplier || 1.0,
+    expiryDate: medicine?.expiryDate || '',
+    batchNumber: medicine?.batchNumber || '',
+    supplier: medicine?.supplier || 'SUP-001',
+    unitPrice: medicine?.unitPrice || 0,
+  });
+  const [errors, setErrors] = useState({});
+
+  const categories = ['Analgesik', 'Antibiotik', 'Kardiovaskular', 'Antidiabetik', 'Gastrointestinal', 'Antihistamin', 'Kortikosteroid', 'Vitamin', 'Respiratori', 'Sedatif', 'Antiemetik', 'Diuretik', 'Antifungal'];
+  const units = ['Tablet', 'Kapsul', 'Strip', 'Botol', 'Vial', 'Pcs'];
+
+  const handleChange = (field, value) => {
+    setForm(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) setErrors(prev => ({ ...prev, [field]: null }));
+  };
+
+  const validate = () => {
+    const errs = {};
+    if (!form.name.trim()) errs.name = 'Nama obat wajib diisi';
+    if (!form.batchNumber.trim()) errs.batchNumber = 'No batch wajib diisi';
+    if (!form.expiryDate) errs.expiryDate = 'Tanggal kadaluarsa wajib diisi';
+    if (form.currentStock < 0) errs.currentStock = 'Stok tidak valid';
+    if (form.unitPrice <= 0) errs.unitPrice = 'Harga harus lebih dari 0';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      onSave({
+        ...form,
+        currentStock: Number(form.currentStock),
+        minStock: Number(form.minStock),
+        maxStock: Number(form.maxStock),
+        dailyUsage: Number(form.dailyUsage),
+        seasonalMultiplier: Number(form.seasonalMultiplier),
+        unitPrice: Number(form.unitPrice),
+      });
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={onClose}>
+      <div className="bg-white rounded-2xl w-full max-w-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="text-lg font-bold text-text">{medicine ? 'Edit Obat' : 'Tambah Obat Baru'}</h3>
+          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded-lg"><X className="w-5 h-5" /></button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Nama Obat *</label>
+              <input value={form.name} onChange={(e) => handleChange('name', e.target.value)} className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light ${errors.name ? 'border-error' : 'border-gray-200'}`} />
+              {errors.name && <p className="text-xs text-error mt-1">{errors.name}</p>}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Kategori</label>
+              <select value={form.category} onChange={(e) => handleChange('category', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light">
+                {categories.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">No Batch *</label>
+              <input value={form.batchNumber} onChange={(e) => handleChange('batchNumber', e.target.value)} className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light ${errors.batchNumber ? 'border-error' : 'border-gray-200'}`} />
+              {errors.batchNumber && <p className="text-xs text-error mt-1">{errors.batchNumber}</p>}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Satuan</label>
+              <select value={form.unit} onChange={(e) => handleChange('unit', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light">
+                {units.map(u => <option key={u} value={u}>{u}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Stok Saat Ini</label>
+              <input type="number" value={form.currentStock} onChange={(e) => handleChange('currentStock', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Stok Minimum</label>
+              <input type="number" value={form.minStock} onChange={(e) => handleChange('minStock', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Tanggal Kadaluarsa *</label>
+              <input type="date" value={form.expiryDate} onChange={(e) => handleChange('expiryDate', e.target.value)} className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light ${errors.expiryDate ? 'border-error' : 'border-gray-200'}`} />
+              {errors.expiryDate && <p className="text-xs text-error mt-1">{errors.expiryDate}</p>}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Pemakaian Harian</label>
+              <input type="number" value={form.dailyUsage} onChange={(e) => handleChange('dailyUsage', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Harga Satuan (Rp) *</label>
+              <input type="number" value={form.unitPrice} onChange={(e) => handleChange('unitPrice', e.target.value)} className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light ${errors.unitPrice ? 'border-error' : 'border-gray-200'}`} />
+              {errors.unitPrice && <p className="text-xs text-error mt-1">{errors.unitPrice}</p>}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Supplier</label>
+              <select value={form.supplier} onChange={(e) => handleChange('supplier', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light">
+                {suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <div className="flex gap-3 pt-3">
+            <button type="button" onClick={onClose} className="flex-1 py-2.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">Batal</button>
+            <button type="submit" className="flex-1 py-2.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-dark transition-colors shadow-md">{medicine ? 'Simpan Perubahan' : 'Tambah Obat'}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

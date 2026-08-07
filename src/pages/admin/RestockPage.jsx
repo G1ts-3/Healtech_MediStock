@@ -99,9 +99,9 @@ export default function RestockPage() {
       )}
 
       {/* Two-panel layout */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-2 gap-6 items-start">
         {/* Left panel - Calculator */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 self-start">
           <h3 className="text-base font-bold text-primary border-b-2 border-primary pb-2 mb-5">Smart Restock Calculator</h3>
 
           <div className="space-y-4">

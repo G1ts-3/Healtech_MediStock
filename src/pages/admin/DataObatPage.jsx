@@ -61,6 +61,68 @@ export default function DataObatPage() {
     return 0;
   });
 
+  // Export Excel (.xls) Native - 100% Client-side, separate columns, styled header
+  const handleExportCSV = () => {
+    const headers = [
+      'Kode Obat',
+      'Nama Obat',
+      'Kategori Obat',
+      'No Batch',
+      'Stok Sisa',
+      'Satuan',
+      'Status Stok',
+      'Stok Minimum',
+      'Stok Maksimum',
+      'Pemakaian Harian',
+      'Harga Satuan (Rp)',
+      'Tanggal Kadaluarsa',
+      'Status FEFO'
+    ];
+
+    let tableHTML = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+    <head><meta charset="utf-8"/><style>
+      table { border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; }
+      th { background-color: #185FA5; color: #ffffff; border: 1px solid #cccccc; padding: 10px; text-align: left; font-weight: bold; }
+      td { border: 1px solid #cccccc; padding: 8px; text-align: left; }
+      tr:nth-child(even) { background-color: #f8fafc; }
+    </style></head><body><table><thead><tr>`;
+
+    headers.forEach(h => {
+      tableHTML += `<th>${h}</th>`;
+    });
+    tableHTML += `</tr></thead><tbody>`;
+
+    sorted.forEach(med => {
+      tableHTML += `<tr>
+        <td>${med.id}</td>
+        <td>${med.name}</td>
+        <td>${med.category}</td>
+        <td>${med.batchNumber}</td>
+        <td>${med.currentStock}</td>
+        <td>${med.unit}</td>
+        <td>${getStockStatus(med).toUpperCase()}</td>
+        <td>${med.minStock}</td>
+        <td>${med.maxStock}</td>
+        <td>${med.dailyUsage}</td>
+        <td>${med.unitPrice}</td>
+        <td>${med.expiryDate}</td>
+        <td>${getFEFOStatus(med).toUpperCase()}</td>
+      </tr>`;
+    });
+
+    tableHTML += `</tbody></table></body></html>`;
+
+    const blob = new Blob(['\uFEFF' + tableHTML], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `Data_Obat_MediStock_${new Date().toISOString().split('T')[0]}.xls`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const handleSort = (field) => {
     if (sortField === field) {
       setSortDir(prev => prev === 'asc' ? 'desc' : 'asc');
@@ -180,16 +242,9 @@ export default function DataObatPage() {
           </select>
         </div>
         <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-secondary text-white text-sm font-medium rounded-lg hover:bg-secondary/90 transition-colors shadow-sm">
+          <button onClick={handleExportCSV} className="flex items-center gap-2 px-4 py-2 bg-secondary text-white text-sm font-medium rounded-lg hover:bg-secondary/90 transition-colors shadow-sm">
             <FileSpreadsheet className="w-4 h-4" />
-            Konversi xls
-          </button>
-          <button
-            onClick={() => setDeleteConfirm('bulk')}
-            className="flex items-center gap-2 px-4 py-2 bg-error text-white text-sm font-medium rounded-lg hover:bg-error/90 transition-colors shadow-sm"
-          >
-            <Trash2 className="w-4 h-4" />
-            Hapus Obat
+            Konversi xlsx
           </button>
           <button
             onClick={handleAdd}
@@ -325,7 +380,7 @@ export default function DataObatPage() {
         <MedicineFormModal
           medicine={editingMedicine}
           suppliers={suppliers}
-          onSave={handleSave}   
+          onSave={handleSave}
           onClose={() => { setShowModal(false); setEditingMedicine(null); }}
         />
       )}

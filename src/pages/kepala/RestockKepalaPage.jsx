@@ -1,15 +1,13 @@
 import { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Calendar, ChevronDown, Check, X, MessageSquare } from 'lucide-react';
+import DatePickerButton from '../../components/common/DatePickerButton';
 
 export default function RestockKepalaPage() {
   const { medicines, restockRequests, updateRestockStatus, getDaysUntilStockout, getStockStatus, getRecommendedQty, suppliers } = useApp();
   const [filterStatus, setFilterStatus] = useState('menunggu');
   const [noteModal, setNoteModal] = useState(null);
   const [noteText, setNoteText] = useState('');
-
-  const today = new Date();
-  const dateStr = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
   const filtered = restockRequests
     .filter(r => filterStatus === 'semua' || r.status === filterStatus)
@@ -42,11 +40,7 @@ export default function RestockKepalaPage() {
           <h1 className="text-2xl font-bold text-text">Persetujuan Restock</h1>
           <p className="text-sm text-gray-500 mt-1">Setujui atau tolak permintaan restock berdasarkan tingkat urgensi.</p>
         </div>
-        <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
-          <Calendar className="w-4 h-4 text-gray-500" />
-          <span className="text-sm font-medium text-text">{dateStr}</span>
-          <ChevronDown className="w-4 h-4 text-gray-400" />
-        </div>
+        <DatePickerButton />
       </div>
 
       {/* Filter tabs */}
@@ -101,13 +95,18 @@ export default function RestockKepalaPage() {
                     <td className="px-4 py-4 text-sm font-medium text-text">{req.requestedQty}</td>
                     <td className="px-4 py-4 text-sm text-gray-500">{new Date(req.createdAt).toLocaleDateString('id-ID')}</td>
                     <td className="px-4 py-4 text-center">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
-                        req.urgency === 'kritis' ? 'bg-red-100 text-error' :
-                        req.urgency === 'menipis' ? 'bg-yellow-100 text-yellow-700' :
-                        'bg-green-100 text-success'
-                      }`}>
-                        {req.urgency}
-                      </span>
+                      {(() => {
+                        const currentUrgency = med ? getStockStatus(med) : req.urgency;
+                        return (
+                          <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                            currentUrgency === 'kritis' ? 'bg-red-100 text-error' :
+                            currentUrgency === 'menipis' ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-green-100 text-success'
+                          }`}>
+                            {currentUrgency}
+                          </span>
+                        );
+                      })()}
                     </td>
                     <td className="px-4 py-4 text-center">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${

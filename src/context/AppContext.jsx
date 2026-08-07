@@ -48,10 +48,30 @@ export function AppProvider({ children }) {
   useEffect(() => { saveToStorage(STORAGE_KEYS.restockRequests, restockRequests); }, [restockRequests]);
   useEffect(() => { saveToStorage(STORAGE_KEYS.notifications, notifications); }, [notifications]);
 
+  // Add notification
+  const addNotification = useCallback((type, message, by) => {
+    const now = new Date();
+    const newNotif = {
+      id: Date.now(),
+      type,
+      message,
+      by,
+      time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+      date: now.toISOString().split('T')[0],
+      read: false,
+    };
+    setNotifications(prev => [newNotif, ...prev].slice(0, 50));
+  }, []);
+
+  const clearNotifications = useCallback(() => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  }, []);
+
   // Helper: get stock status
   const getStockStatus = useCallback((medicine) => {
-    if (medicine.currentStock <= medicine.minStock * 0.3) return 'kritis';
-    if (medicine.currentStock <= medicine.minStock) return 'menipis';
+    if (!medicine) return 'aman';
+    if (Number(medicine.currentStock) <= Number(medicine.minStock) * 0.3) return 'kritis';
+    if (Number(medicine.currentStock) <= Number(medicine.minStock)) return 'menipis';
     return 'aman';
   }, []);
 
@@ -127,22 +147,41 @@ export function AppProvider({ children }) {
     addNotification('Restock', `Permintaan restock ${medicine.name} diajukan`, 'Admin Farmasi');
   }, [medicines, restockRequests.length, getStockStatus, getRecommendedQty]);
 
+  // Auto-sync medicine stock for approved restock requests if stock is still critical
+  useEffect(() => {
+    const approvedRequests = restockRequests.filter(r => r.status === 'disetujui');
+    if (approvedRequests.length > 0) {
+      setMedicines(prevMeds => {
+        let changed = false;
+        const updatedMeds = prevMeds.map(m => {
+          // Check if medicine is critical but has approved restock requests
+          const approvedForMed = approvedRequests.filter(r => r.medicineId === m.id);
+          if (approvedForMed.length > 0 && Number(m.currentStock) <= Number(m.minStock) * 0.3) {
+            const addedQty = approvedForMed.reduce((sum, r) => sum + Number(r.requestedQty), 0);
+            changed = true;
+            return { ...m, currentStock: Number(m.currentStock) + addedQty };
+          }
+          return m;
+        });
+        return changed ? updatedMeds : prevMeds;
+      });
+    }
+  }, [restockRequests]);
+
   // Approve/Reject restock
   const updateRestockStatus = useCallback((requestId, status, notes = '') => {
+    let targetReq = null;
+    
     setRestockRequests(prev => prev.map(r => {
       if (r.id !== requestId) return r;
-      const updated = { ...r, status, approvedBy: status === 'ditolak' ? 'Kepala Farmasi' : 'Kepala Farmasi' };
+      targetReq = r;
+      const updated = { ...r, status, approvedBy: 'Kepala Farmasi' };
       if (notes) updated.notes = notes;
       return updated;
     }));
 
-    const request = restockRequests.find(r => r.id === requestId);
-    const medicine = request ? medicines.find(m => m.id === request.medicineId) : null;
-    const medicineName = medicine ? medicine.name : requestId;
-    
     if (status === 'disetujui') {
-      // Create distribution record
-      const request = restockRequests.find(r => r.id === requestId);
+      const request = restockRequests.find(r => r.id === requestId) || targetReq;
       if (request) {
         const med = medicines.find(m => m.id === request.medicineId);
         const newDist = {
@@ -158,53 +197,60 @@ export function AppProvider({ children }) {
           ],
         };
         setDistributions(prev => [...prev, newDist]);
+
+        // Increment medicine stock so it is no longer critical
+        setMedicines(prevMeds => prevMeds.map(m => {
+          if (m.id === request.medicineId) {
+            const newStock = Number(m.currentStock) + Number(request.requestedQty);
+            return { ...m, currentStock: newStock };
+          }
+          return m;
+        }));
       }
       addNotification('Restock', `Permintaan restock #${requestId} disetujui`, 'Kepala Farmasi');
     } else {
       addNotification('Restock', `Permintaan restock #${requestId} ditolak`, 'Kepala Farmasi');
     }
-  }, [restockRequests, medicines, distributions.length]);
+  }, [restockRequests, medicines, distributions.length, addNotification]);
 
   // Update distribution status
   const updateDistributionStatus = useCallback((distId, newStatus) => {
-    setDistributions(prev => prev.map(d => {
-      if (d.id !== distId) return d;
-      const now = new Date();
-      return {
-        ...d,
-        status: newStatus,
-        statusUpdates: [
-          ...d.statusUpdates,
-          {
-            status: newStatus,
-            date: now.toISOString().split('T')[0],
-            time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-            updatedBy: 'Gudang Farmasi',
-          },
-        ],
-      };
-    }));
+    let targetDist = null;
+    
+    setDistributions(prev => {
+      targetDist = prev.find(d => d.id === distId);
+      return prev.map(d => {
+        if (d.id !== distId) return d;
+        const now = new Date();
+        return {
+          ...d,
+          status: newStatus,
+          statusUpdates: [
+            ...d.statusUpdates,
+            {
+              status: newStatus,
+              date: now.toISOString().split('T')[0],
+              time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+              updatedBy: 'Gudang Farmasi',
+            },
+          ],
+        };
+      });
+    });
+
+    // When status changes to 'diterima', increment currentStock for the medicine
+    if (newStatus === 'diterima' && targetDist && targetDist.status !== 'diterima') {
+      setMedicines(prevMeds => prevMeds.map(m => {
+        if (m.id === targetDist.medicineId) {
+          const newStock = Number(m.currentStock) + Number(targetDist.quantity);
+          return { ...m, currentStock: newStock };
+        }
+        return m;
+      }));
+    }
+
     addNotification('Distribusi', `Distribusi #${distId} status diperbarui ke ${newStatus}`, 'Gudang Farmasi');
-  }, []);
-
-  // Add notification
-  const addNotification = useCallback((type, message, by) => {
-    const now = new Date();
-    const newNotif = {
-      id: Date.now(),
-      type,
-      message,
-      by,
-      time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-      date: now.toISOString().split('T')[0],
-      read: false,
-    };
-    setNotifications(prev => [newNotif, ...prev].slice(0, 50));
-  }, []);
-
-  const clearNotifications = useCallback(() => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-  }, []);
+  }, [addNotification]);
 
   // Stats
   const stats = {

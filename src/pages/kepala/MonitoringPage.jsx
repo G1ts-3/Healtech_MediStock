@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Calendar, ChevronDown, Search, SortAsc, SortDesc } from 'lucide-react';
+import DatePickerButton from '../../components/common/DatePickerButton';
 
 export default function MonitoringPage() {
   const { medicines, getStockStatus, getFEFOStatus, getDaysUntilStockout, suppliers } = useApp();
@@ -9,9 +10,6 @@ export default function MonitoringPage() {
   const [filterCategory, setFilterCategory] = useState('semua');
   const [sortField, setSortField] = useState('daysLeft');
   const [sortDir, setSortDir] = useState('asc');
-
-  const today = new Date();
-  const dateStr = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
   const categories = [...new Set(medicines.map(m => m.category))];
 
@@ -60,11 +58,7 @@ export default function MonitoringPage() {
           <h1 className="text-2xl font-bold text-text">Monitoring Stok</h1>
           <p className="text-sm text-gray-500 mt-1">Pantau seluruh status persediaan obat dan estimasi waktu habis.</p>
         </div>
-        <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
-          <Calendar className="w-4 h-4 text-gray-500" />
-          <span className="text-sm font-medium text-text">{dateStr}</span>
-          <ChevronDown className="w-4 h-4 text-gray-400" />
-        </div>
+        <DatePickerButton />
       </div>
 
       {/* Filters */}

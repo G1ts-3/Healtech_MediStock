@@ -31,19 +31,6 @@ MediStock Hub merupakan sebuah platform berbasis web yang dirancang untuk menceg
 
 ---
 
-## Teknologi & Framework
-
-| Komponen | Teknologi |
-| :--- | :--- |
-| **Frontend Framework** | React 19 + Vite 8 |
-| **Styling** | Tailwind CSS v4 |
-| **Icons** | Lucide React |
-| **Routing** | React Router v7 |
-| **Charts & Analytics** | Recharts |
-| **State Management** | React Context API + LocalStorage Persistence |
-
----
-
 ## Panduan Memulai (Getting Started)
 
 - [Node.js](https://nodejs.org/) (Versi 18 atau lebih baru)

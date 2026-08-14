@@ -41,6 +41,18 @@ export default function DistribusiPage() {
     return idx < statusOrder.length - 1 ? statusOrder[idx + 1] : null;
   };
 
+  const canUpdateStatus = (dist) => {
+    const nextStatus = getNextStatus(dist.status);
+    if (!nextStatus) return false;
+    if (currentRole === 'gudang') {
+      return dist.status === 'diproses' && nextStatus === 'dikirim';
+    }
+    if (currentRole === 'admin') {
+      return dist.status === 'dikirim' && nextStatus === 'diterima';
+    }
+    return false;
+  };
+
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
       {/* Header */}
@@ -122,17 +134,27 @@ export default function DistribusiPage() {
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${cfg.color}`}>
                         {cfg.label}
                       </span>
-                      {(currentRole === 'gudang' || currentRole === 'admin') && nextStatus && (
+                      {canUpdateStatus(dist) ? (
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             updateDistributionStatus(dist.id, nextStatus);
                           }}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white text-xs font-medium rounded-lg hover:bg-primary-dark transition-colors shadow-sm"
+                          className="flex items-center gap-1.5 px-3.5 py-1.5 bg-primary text-white text-xs font-semibold rounded-lg hover:bg-primary-dark transition-all shadow-sm active:scale-95"
                         >
                           <ArrowRight className="w-3.5 h-3.5" />
-                          {statusConfig[nextStatus].label}
+                          Konfirmasi {statusConfig[nextStatus].label}
                         </button>
+                      ) : (
+                        currentRole === 'gudang' && dist.status === 'dikirim' ? (
+                          <span className="text-xs text-blue-600 font-medium bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100">
+                            Telah Dikirim
+                          </span>
+                        ) : currentRole === 'admin' && dist.status === 'diproses' ? (
+                          <span className="text-xs text-yellow-700 font-medium bg-yellow-50 px-2.5 py-1 rounded-lg border border-yellow-100">
+                            Menunggu Pengiriman Gudang
+                          </span>
+                        ) : null
                       )}
                       <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                     </div>

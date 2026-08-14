@@ -9,7 +9,7 @@ const statusConfig = {
 };
 
 export default function GudangDashboard() {
-  const { distributions, medicines, suppliers } = useApp();
+  const { distributions, medicines, suppliers, updateDistributionStatus } = useApp();
 
   const diproses = distributions.filter(d => d.status === 'diproses').length;
   const dikirim = distributions.filter(d => d.status === 'dikirim').length;
@@ -25,7 +25,7 @@ export default function GudangDashboard() {
           <h1 className="text-2xl font-bold text-text">Dashboard</h1>
           <div className="mt-2">
             <h2 className="text-xl font-bold text-text">Selamat Datang, Staff Gudang</h2>
-            <p className="text-sm text-gray-500">Kelola status distribusi obat dari supplier ke gudang.</p>
+            <p className="text-sm text-gray-500">Kelola status proses dan pengiriman barang dari supplier ke gudang.</p>
           </div>
         </div>
         <DatePickerButton />
@@ -81,6 +81,7 @@ export default function GudangDashboard() {
               <th className="text-left text-xs font-medium text-gray-400 px-4 py-3">Qty</th>
               <th className="text-left text-xs font-medium text-gray-400 px-4 py-3">Supplier</th>
               <th className="text-center text-xs font-medium text-gray-400 px-4 py-3">Status</th>
+              <th className="text-center text-xs font-medium text-gray-400 px-4 py-3">Aksi</th>
             </tr>
           </thead>
           <tbody>
@@ -96,6 +97,21 @@ export default function GudangDashboard() {
                   <td className="px-4 py-3.5 text-sm text-gray-600">{sup?.name || dist.fromSupplier}</td>
                   <td className="px-4 py-3.5 text-center">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${cfg.color}`}>{cfg.label}</span>
+                  </td>
+                  <td className="px-4 py-3.5 text-center">
+                    {dist.status === 'diproses' ? (
+                      <button
+                        onClick={() => updateDistributionStatus(dist.id, 'dikirim')}
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-primary text-white text-xs font-semibold rounded-lg hover:bg-primary-dark transition-colors shadow-sm"
+                      >
+                        <Truck className="w-3.5 h-3.5" />
+                        Konfirmasi Dikirim
+                      </button>
+                    ) : dist.status === 'dikirim' ? (
+                      <span className="text-xs text-blue-600 font-medium">Sudah Dikirim</span>
+                    ) : (
+                      <span className="text-xs text-success font-medium">Diterima</span>
+                    )}
                   </td>
                 </tr>
               );

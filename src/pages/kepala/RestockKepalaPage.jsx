@@ -1,17 +1,75 @@
 import { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Calendar, ChevronDown, Check, X, MessageSquare } from 'lucide-react';
+import { Calendar, ChevronDown, Check, X, MessageSquare, Search } from 'lucide-react';
 import DatePickerButton from '../../components/common/DatePickerButton';
 
 export default function RestockKepalaPage() {
-  const { medicines, restockRequests, updateRestockStatus, getDaysUntilStockout, getStockStatus, getRecommendedQty, suppliers } = useApp();
+  const { medicines, restockRequests, updateRestockStatus, getDaysUntilStockout, getStockStatus, getFEFOStatus } = useApp();
   const [filterStatus, setFilterStatus] = useState('menunggu');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortField, setSortField] = useState('category');
+  const [sortDir, setSortDir] = useState('asc');
   const [noteModal, setNoteModal] = useState(null);
   const [noteText, setNoteText] = useState('');
 
   const filtered = restockRequests
-    .filter(r => filterStatus === 'semua' || r.status === filterStatus)
+    .filter(r => {
+      if (filterStatus !== 'semua' && r.status !== filterStatus) return false;
+      const med = medicines.find(m => m.id === r.medicineId);
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const medName = (med?.name || '').toLowerCase();
+        const medCat = (med?.category || '').toLowerCase();
+        const medCode = (med?.id || '').toLowerCase();
+        const reqId = r.id.toLowerCase();
+        if (!medName.includes(q) && !medCat.includes(q) && !medCode.includes(q) && !reqId.includes(q)) {
+          return false;
+        }
+      }
+      return true;
+    })
     .sort((a, b) => {
+      const medA = medicines.find(m => m.id === a.medicineId);
+      const medB = medicines.find(m => m.id === b.medicineId);
+
+      let valA, valB;
+      if (sortField === 'category') {
+        valA = (medA?.category || '').toLowerCase();
+        valB = (medB?.category || '').toLowerCase();
+        return sortDir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      }
+      if (sortField === 'name') {
+        valA = (medA?.name || '').toLowerCase();
+        valB = (medB?.name || '').toLowerCase();
+        return sortDir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      }
+      if (sortField === 'fefoStatus') {
+        const order = { kritis: 0, warning: 1, aman: 2 };
+        valA = medA ? (order[getFEFOStatus?.(medA)] ?? 2) : 2;
+        valB = medB ? (order[getFEFOStatus?.(medB)] ?? 2) : 2;
+        return sortDir === 'asc' ? valA - valB : valB - valA;
+      }
+      if (sortField === 'stockStatus') {
+        const order = { kritis: 0, menipis: 1, aman: 2 };
+        valA = medA ? (order[getStockStatus(medA)] ?? 2) : 2;
+        valB = medB ? (order[getStockStatus(medB)] ?? 2) : 2;
+        return sortDir === 'asc' ? valA - valB : valB - valA;
+      }
+      if (sortField === 'stock') {
+        valA = medA ? Number(medA.currentStock) : 0;
+        valB = medB ? Number(medB.currentStock) : 0;
+        return sortDir === 'asc' ? valA - valB : valB - valA;
+      }
+      if (sortField === 'expiryDate') {
+        valA = medA ? new Date(medA.expiryDate).getTime() : 0;
+        valB = medB ? new Date(medB.expiryDate).getTime() : 0;
+        return sortDir === 'asc' ? valA - valB : valB - valA;
+      }
+      if (sortField === 'id') {
+        valA = a.id.toLowerCase();
+        valB = b.id.toLowerCase();
+        return sortDir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      }
       const urgencyOrder = { kritis: 0, menipis: 1, normal: 2 };
       return (urgencyOrder[a.urgency] || 2) - (urgencyOrder[b.urgency] || 2);
     });
@@ -38,7 +96,7 @@ export default function RestockKepalaPage() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-text">Persetujuan Restock</h1>
-          <p className="text-sm text-gray-500 mt-1">Setujui atau tolak permintaan restock berdasarkan tingkat urgensi.</p>
+          <p className="text-sm text-gray-500 mt-1">Setujui atau tolak permintaan restock berdasarkan tingkat urgensi dan kategori obat.</p>
         </div>
         <DatePickerButton />
       </div>
@@ -63,6 +121,42 @@ export default function RestockKepalaPage() {
         ))}
       </div>
 
+      {/* Search & Sort Toolbar */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3 flex-1 max-w-xl">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Cari nama obat, kode, kategori..."
+              className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light"
+            />
+          </div>
+          <select
+            value={`${sortField}-${sortDir}`}
+            onChange={(e) => {
+              const [field, dir] = e.target.value.split('-');
+              setSortField(field);
+              setSortDir(dir);
+            }}
+            className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-light shrink-0 cursor-pointer"
+          >
+            <option value="category-asc">Urutkan: Kategori (A - Z)</option>
+            <option value="category-desc">Urutkan: Kategori (Z - A)</option>
+            <option value="name-asc">Urutkan: Nama (A - Z)</option>
+            <option value="name-desc">Urutkan: Nama (Z - A)</option>
+            <option value="fefoStatus-asc">Urutkan: Status FEFO (Kritis Dahulu)</option>
+            <option value="stockStatus-asc">Urutkan: Status Stok (Kritis Dahulu)</option>
+            <option value="stock-asc">Urutkan: Stok (Terkecil)</option>
+            <option value="stock-desc">Urutkan: Stok (Terbanyak)</option>
+            <option value="expiryDate-asc">Urutkan: Exp Date (Terdekat)</option>
+            <option value="id-asc">Urutkan: Kode Obat</option>
+          </select>
+        </div>
+      </div>
+
       {/* Requests table */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
         <table className="w-full">
@@ -79,7 +173,7 @@ export default function RestockKepalaPage() {
           </thead>
           <tbody>
             {filtered.length === 0 ? (
-              <tr><td colSpan={7} className="text-center py-10 text-gray-400 text-sm">Tidak ada data</td></tr>
+              <tr><td colSpan={7} className="text-center py-10 text-gray-400 text-sm">Tidak ada data yang sesuai filter</td></tr>
             ) : (
               filtered.map(req => {
                 const med = medicines.find(m => m.id === req.medicineId);
@@ -90,7 +184,9 @@ export default function RestockKepalaPage() {
                     <td className="px-6 py-4 text-sm font-medium text-gray-500">{req.id}</td>
                     <td className="px-4 py-4">
                       <p className="text-sm font-semibold text-text">{med?.name || req.medicineId}</p>
-                      <p className="text-xs text-gray-400">Sisa stok: {med?.currentStock || 0} {med?.unit || ''} • Est. habis: {daysLeft} hari</p>
+                      <p className="text-xs text-gray-400">
+                        {med?.category ? `${med.category} • ` : ''}Sisa stok: {med?.currentStock || 0} {med?.unit || ''} • Est. habis: {daysLeft} hari
+                      </p>
                     </td>
                     <td className="px-4 py-4 text-sm font-medium text-text">{req.requestedQty}</td>
                     <td className="px-4 py-4 text-sm text-gray-500">{new Date(req.createdAt).toLocaleDateString('id-ID')}</td>

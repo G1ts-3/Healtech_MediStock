@@ -80,7 +80,7 @@ export function AppProvider({ children }) {
     const today = new Date();
     const expiry = new Date(medicine.expiryDate);
     const daysUntilExpiry = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
-    if (daysUntilExpiry <= 30) return 'kritis';
+    if (daysUntilExpiry <= 10) return 'kritis';
     if (daysUntilExpiry <= 90) return 'warning';
     return 'aman';
   }, []);

@@ -101,7 +101,7 @@ export default function RestockKepalaPage() {
         <DatePickerButton />
       </div>
 
-      {/* Filter tabs */}
+      {/* Filter */}
       <div className="flex gap-2">
         {['menunggu', 'disetujui', 'ditolak', 'semua'].map(tab => (
           <button
@@ -121,7 +121,7 @@ export default function RestockKepalaPage() {
         ))}
       </div>
 
-      {/* Search & Sort Toolbar */}
+      {/* Search dan Sort Toolbar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3 flex-1 max-w-xl">
           <div className="relative flex-1">
@@ -157,7 +157,6 @@ export default function RestockKepalaPage() {
         </div>
       </div>
 
-      {/* Requests table */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
         <table className="w-full">
           <thead>
@@ -243,7 +242,6 @@ export default function RestockKepalaPage() {
         </table>
       </div>
 
-      {/* Note modal for rejection */}
       {noteModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl">

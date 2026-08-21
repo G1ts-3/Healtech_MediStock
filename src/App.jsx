@@ -26,7 +26,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={currentRole ? <Navigate to={`/${currentRole}/dashboard`} replace /> : <LoginPage />} />
 
-      {/* Admin routes */}
+      {/* routes admin */}
       <Route element={<ProtectedRoute allowedRoles={['admin']}><MainLayout /></ProtectedRoute>}>
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/data-obat" element={<DataObatPage />} />
@@ -35,7 +35,7 @@ function AppRoutes() {
         <Route path="/admin/analytics" element={<AnalyticsPage />} />
       </Route>
 
-      {/* Kepala routes */}
+      {/* routes kepala */}
       <Route element={<ProtectedRoute allowedRoles={['kepala']}><MainLayout /></ProtectedRoute>}>
         <Route path="/kepala/dashboard" element={<KepalaDashboard />} />
         <Route path="/kepala/monitoring" element={<MonitoringPage />} />
@@ -43,13 +43,12 @@ function AppRoutes() {
         <Route path="/kepala/analytics" element={<AnalyticsPage />} />
       </Route>
 
-      {/* Gudang routes */}
+      {/* routes gudang */}
       <Route element={<ProtectedRoute allowedRoles={['gudang']}><MainLayout /></ProtectedRoute>}>
         <Route path="/gudang/dashboard" element={<GudangDashboard />} />
         <Route path="/gudang/distribusi" element={<DistribusiPage />} />
       </Route>
-
-      {/* Catch-all */}
+      
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

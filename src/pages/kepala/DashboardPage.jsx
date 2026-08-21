@@ -6,7 +6,6 @@ import DatePickerButton from '../../components/common/DatePickerButton';
 export default function KepalaDashboard() {
   const { medicines, stats, restockRequests, distributions, getStockStatus } = useApp();
 
-  // Stock by category data
   const categoryData = medicines.reduce((acc, m) => {
     const cat = acc.find(c => c.name === m.category);
     const status = getStockStatus(m);
@@ -39,7 +38,6 @@ export default function KepalaDashboard() {
         <DatePickerButton />
       </div>
 
-      {/* Summary cards */}
       <div className="grid grid-cols-4 gap-4">
         <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3">
@@ -88,7 +86,6 @@ export default function KepalaDashboard() {
       </div>
 
       <div className="grid grid-cols-5 gap-6">
-        {/* Stacked bar chart */}
         <div className="col-span-3 bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
           <h3 className="text-base font-semibold text-text mb-5">Status Stok per Kategori</h3>
           <ResponsiveContainer width="100%" height={280}>

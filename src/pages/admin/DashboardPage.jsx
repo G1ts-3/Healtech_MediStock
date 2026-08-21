@@ -108,7 +108,6 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Chart */}
           <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-base font-semibold text-text">Grafik tren Pemakaian</h3>
@@ -151,7 +150,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Right section: Quick Notification */}
+        {/* fitur Quick Notification */}
         <div className="lg:col-span-1 bg-white rounded-xl border border-gray-100 p-5 shadow-sm flex flex-col max-h-[385px]">
           <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-100 shrink-0">
             <h3 className="text-sm font-bold text-text">Quick Notification</h3>
@@ -177,7 +176,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Activities table */}
+      {/* fitur aktivitas terbaru */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
         <div className="flex items-center justify-between px-6 pt-5 pb-3">
           <h3 className="text-base font-semibold text-text">Aktivitas Terbaru</h3>

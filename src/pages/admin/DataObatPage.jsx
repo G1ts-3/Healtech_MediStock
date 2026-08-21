@@ -11,7 +11,6 @@ export default function DataObatPage() {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [detailMedicine, setDetailMedicine] = useState(null);
 
-  // Sorting state
   const [sortField, setSortField] = useState('name');
   const [sortDir, setSortDir] = useState('asc');
 
@@ -61,7 +60,7 @@ export default function DataObatPage() {
     return 0;
   });
 
-  // Export Excel (.xls) Native - 100% Client-side, separate columns, styled header
+  // style buat xls
   const handleExportCSV = () => {
     const headers = [
       'Kode Obat',
@@ -189,7 +188,6 @@ export default function DataObatPage() {
         <DatePickerButton />
       </div>
 
-      {/* Summary cards */}
       <div className="grid grid-cols-4 gap-4">
         <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
           <p className="text-xs text-gray-500 mb-1">Total Jenis Obat</p>
@@ -209,7 +207,6 @@ export default function DataObatPage() {
         </div>
       </div>
 
-      {/* Action buttons & Sort toolbar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3 flex-1 max-w-xl">
           <div className="relative flex-1">

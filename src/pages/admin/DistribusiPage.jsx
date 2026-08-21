@@ -64,7 +64,7 @@ export default function DistribusiPage() {
         <DatePickerButton />
       </div>
 
-      {/* Filter tabs & Search bar */}
+      {/* Filter & Search bar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         {/* Filter tabs */}
         <div className="flex gap-2 flex-wrap">
@@ -99,7 +99,6 @@ export default function DistribusiPage() {
         </div>
       </div>
 
-      {/* Distribution cards */}
       <div className="space-y-4">
         {filtered.length === 0 ? (
           <div className="bg-white rounded-xl border border-gray-100 p-10 text-center shadow-sm">
@@ -160,7 +159,6 @@ export default function DistribusiPage() {
                     </div>
                   </div>
 
-                  {/* Status progress bar */}
                   <div className="flex items-center gap-2 mt-4">
                     {statusOrder.map((s, i) => {
                       const isCompleted = statusOrder.indexOf(dist.status) >= i;
@@ -183,7 +181,6 @@ export default function DistribusiPage() {
                   </div>
                 </div>
 
-                {/* Expanded timeline */}
                 {isExpanded && (
                   <div className="border-t border-gray-100 px-5 py-4 bg-gray-50/50">
                     <div className="grid grid-cols-2 gap-4 mb-4">

@@ -14,8 +14,6 @@
   --font-sans: 'Inter', sans-serif;
 }
 
-/* Base styles — dibungkus @layer base biar tunduk sama cascade layer Tailwind,
-   jadi utility class (p-*, m-*, space-y-*, dst) bisa nimpa ini seperti seharusnya */
 @layer base {
   * {
     margin: 0;
@@ -32,7 +30,6 @@
   }
 }
 
-/* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -52,7 +49,6 @@
   background: #185FA5;
 }
 
-/* Clinical Alert Animation */
 @keyframes pulseAlert {
 
   0%,
@@ -69,7 +65,6 @@
   animation: pulseAlert 1.5s ease-in-out infinite;
 }
 
-/* Smooth page transitions */
 .page-enter {
   opacity: 0;
   transform: translateY(8px);
@@ -81,7 +76,6 @@
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* Badge animations */
 @keyframes badgeBounce {
 
   0%,
@@ -98,7 +92,6 @@
   animation: badgeBounce 0.6s ease;
 }
 
-/* Calendar Popover Entrance Animation */
 @keyframes calendarOpen {
   0% {
     opacity: 0;
@@ -128,4 +121,4 @@
 
 .animate-icon-bounce {
   animation: calendarIconBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
+}

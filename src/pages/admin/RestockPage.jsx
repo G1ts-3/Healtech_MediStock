@@ -19,7 +19,6 @@ export default function RestockPage() {
 
   const kritisItems = medicines.filter(m => getStockStatus(m) === 'kritis');
 
-  // Clinical Alert Audio
   useEffect(() => {
     if (audioEnabled && kritisItems.length > 0) {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -70,7 +69,6 @@ export default function RestockPage() {
         <DatePickerButton />
       </div>
 
-      {/* Clinical Alert Banner */}
       {kritisItems.length > 0 && (
         <div className="bg-red-50 border border-red-200 rounded-xl p-4 clinical-alert-pulse">
           <div className="flex items-center justify-between">
@@ -91,7 +89,6 @@ export default function RestockPage() {
         </div>
       )}
 
-      {/* Success toast */}
       {showSuccess && (
         <div className="fixed top-6 right-6 bg-success text-white px-5 py-3 rounded-xl shadow-lg z-50 text-sm font-medium animate-[fadeIn_0.3s_ease]">
           ✓ Permintaan restock berhasil diajukan!
@@ -100,7 +97,7 @@ export default function RestockPage() {
 
       {/* Two-panel layout */}
       <div className="grid grid-cols-2 gap-6 items-start">
-        {/* Left panel - Calculator */}
+        {/* Left panel - kalkulator */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 self-start">
           <h3 className="text-base font-bold text-primary border-b-2 border-primary pb-2 mb-5">Smart Restock Calculator</h3>
 
@@ -143,7 +140,6 @@ export default function RestockPage() {
 
             {selectedMedicine && (
               <>
-                {/* Scenario toggle */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Skenario Pemakaian</label>
                   <div className="flex gap-2">
@@ -162,7 +158,7 @@ export default function RestockPage() {
                   </div>
                 </div>
 
-                {/* Calculation results */}
+                {/* hasil kalkulasi untuk estimasi */}
                 <div className="bg-tertiary-light rounded-xl p-4 space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">Stok Saat Ini</span>

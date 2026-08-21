@@ -46,9 +46,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left panel - branding */}
       <div className="hidden lg:flex lg:w-[45%] bg-primary-dark flex-col justify-between p-12 relative overflow-hidden">
-        {/* Decorative circles */}
         <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-primary/30 blur-xl" />
         <div className="absolute bottom-20 -right-10 w-48 h-48 rounded-full bg-primary-light/20 blur-xl" />
 
@@ -66,7 +64,7 @@ export default function LoginPage() {
         <div className="relative z-10" />
       </div>
 
-      {/* Right panel - login form */}
+      {/* form untuk login */}
       <div className="flex-1 flex items-center justify-center bg-tertiary-light p-6">
         <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-10">
           <h2 className="text-3xl font-bold text-text text-center mb-8">Login</h2>
@@ -125,7 +123,7 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Quick login buttons */}
+          {/* (demo untuk login cepat tanpa memasukkan email dan password) */}
           <div className="mt-8 pt-6 border-t border-gray-100">
             <p className="text-xs text-gray-400 text-center mb-3">Quick Login (Demo)</p>
             <div className="grid grid-cols-3 gap-2">

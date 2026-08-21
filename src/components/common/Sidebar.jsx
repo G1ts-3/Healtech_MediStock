@@ -84,10 +84,6 @@ export default function Sidebar() {
           <LogOut className="w-[18px] h-[18px]" />
           <span>Logout</span>
         </button>
-        <div className="flex items-center gap-3 px-4 py-2.5 text-blue-300 text-sm">
-          <Headphones className="w-[18px] h-[18px]" />
-          <span>Customer Service</span>
-        </div>
       </div>
     </aside>
   );

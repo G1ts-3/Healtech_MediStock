@@ -82,4 +82,4 @@ Healtech_MediStock/
 ---
 
 ## Lisensi
- Dikembangkan oleh Tim **IKUTAJALAH**. Hak Cipta © 2026.
+ Dikembangkan oleh Tim **IKUTAJALAH**.

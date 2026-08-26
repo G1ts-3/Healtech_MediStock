@@ -93,7 +93,7 @@ export default function RestockKepalaPage() {
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Persetujuan Restock</h1>
           <p className="text-sm text-gray-500 mt-1">Setujui atau tolak permintaan restock berdasarkan tingkat urgensi dan kategori obat.</p>
@@ -102,7 +102,7 @@ export default function RestockKepalaPage() {
       </div>
 
       {/* Filter */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         {['menunggu', 'disetujui', 'ditolak', 'semua'].map(tab => (
           <button
             key={tab}
@@ -158,7 +158,8 @@ export default function RestockKepalaPage() {
       </div>
 
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <table className="w-full">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[700px]">
           <thead>
             <tr className="bg-gray-50/50 border-b border-gray-100">
               <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">ID</th>
@@ -240,6 +241,7 @@ export default function RestockKepalaPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       {noteModal && (

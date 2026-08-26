@@ -64,7 +64,7 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Dashboard</h1>
           <div className="mt-2">
@@ -182,7 +182,8 @@ export default function AdminDashboard() {
           <h3 className="text-base font-semibold text-text">Aktivitas Terbaru</h3>
           <button className="text-xs text-primary font-medium hover:underline">Lihat Semua</button>
         </div>
-        <table className="w-full">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[600px]">
           <thead>
             <tr className="border-t border-gray-100">
               <th className="text-left text-xs font-medium text-gray-400 px-6 py-3 w-[120px]">Waktu</th>
@@ -213,6 +214,7 @@ export default function AdminDashboard() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

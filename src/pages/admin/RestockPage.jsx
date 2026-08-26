@@ -81,7 +81,7 @@ export default function RestockPage() {
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Permintaan Restock & Smart Calculator</h1>
           <p className="text-sm text-gray-500 mt-1">Hitung rekomendasi pengadaan barang secara otomatis dan kelola pengajuan ke Kepala Farmasi</p>
@@ -116,7 +116,7 @@ export default function RestockPage() {
       )}
 
       {/* Two-panel layout */}
-      <div className="grid grid-cols-2 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         {/* Left panel - kalkulator */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 self-start">
           <h3 className="text-base font-bold text-primary border-b-2 border-primary pb-2 mb-5">Smart Restock Calculator</h3>

@@ -53,7 +53,7 @@ export default function MonitoringPage() {
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Monitoring Stok</h1>
           <p className="text-sm text-gray-500 mt-1">Pantau seluruh status persediaan obat dan estimasi waktu habis.</p>
@@ -62,7 +62,7 @@ export default function MonitoringPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
@@ -95,7 +95,8 @@ export default function MonitoringPage() {
 
       {/* Table */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <table className="w-full">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[800px]">
           <thead>
             <tr className="bg-gray-50/50 border-b border-gray-100">
               <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Kode</th>
@@ -147,6 +148,7 @@ export default function MonitoringPage() {
             })}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

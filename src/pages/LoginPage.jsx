@@ -65,8 +65,8 @@ export default function LoginPage() {
       </div>
 
       {/* form untuk login */}
-      <div className="flex-1 flex items-center justify-center bg-tertiary-light p-6">
-        <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-10">
+      <div className="flex-1 flex items-center justify-center bg-tertiary-light p-4 sm:p-6">
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-6 sm:p-10">
           <h2 className="text-3xl font-bold text-text text-center mb-8">Login</h2>
 
           <form onSubmit={handleSubmit} className="space-y-5">

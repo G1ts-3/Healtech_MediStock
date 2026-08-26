@@ -92,7 +92,6 @@ export default function RestockKepalaPage() {
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Persetujuan Restock</h1>
@@ -101,7 +100,6 @@ export default function RestockKepalaPage() {
         <DatePickerButton />
       </div>
 
-      {/* Filter */}
       <div className="flex gap-2 flex-wrap">
         {['menunggu', 'disetujui', 'ditolak', 'semua'].map(tab => (
           <button
@@ -121,7 +119,6 @@ export default function RestockKepalaPage() {
         ))}
       </div>
 
-      {/* Search dan Sort Toolbar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3 flex-1 max-w-xl">
           <div className="relative flex-1">

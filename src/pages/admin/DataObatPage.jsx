@@ -176,7 +176,6 @@ export default function DataObatPage() {
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Monitoring Stok</h1>
@@ -253,7 +252,6 @@ export default function DataObatPage() {
         </div>
       </div>
 
-      {/* Table */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
         <table className="w-full min-w-[800px]">
@@ -334,7 +332,6 @@ export default function DataObatPage() {
         </div>
       </div>
 
-      {/* Detail Modal */}
       {detailMedicine && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={() => setDetailMedicine(null)}>
           <div className="bg-white rounded-2xl w-full max-w-lg p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
@@ -374,7 +371,6 @@ export default function DataObatPage() {
         </div>
       )}
 
-      {/* Add/Edit Modal */}
       {showModal && (
         <MedicineFormModal
           medicine={editingMedicine}
@@ -384,7 +380,6 @@ export default function DataObatPage() {
         />
       )}
 
-      {/* Delete Confirmation */}
       {deleteConfirm && deleteConfirm !== 'bulk' && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl text-center">
@@ -404,7 +399,6 @@ export default function DataObatPage() {
   );
 }
 
-/* Medicine Form Modal Component */
 function MedicineFormModal({ medicine, suppliers, onSave, onClose }) {
   const [form, setForm] = useState({
     name: medicine?.name || '',

@@ -64,7 +64,6 @@ export default function LoginPage() {
         <div className="relative z-10" />
       </div>
 
-      {/* form untuk login */}
       <div className="flex-1 flex items-center justify-center bg-tertiary-light p-4 sm:p-6">
         <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-6 sm:p-10">
           <h2 className="text-3xl font-bold text-text text-center mb-8">Login</h2>
@@ -123,7 +122,6 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* (demo untuk login cepat tanpa memasukkan email dan password) */}
           <div className="mt-8 pt-6 border-t border-gray-100">
             <p className="text-xs text-gray-400 text-center mb-3">Quick Login (Demo)</p>
             <div className="grid grid-cols-3 gap-2">

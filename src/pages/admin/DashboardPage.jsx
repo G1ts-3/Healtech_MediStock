@@ -63,7 +63,6 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Dashboard</h1>
@@ -75,11 +74,8 @@ export default function AdminDashboard() {
         <DatePickerButton />
       </div>
 
-      {/* Main section: Left (Stats + Chart) & Right (Quick Notification) */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Left section: Summary cards + Chart */}
         <div className="lg:col-span-3 space-y-6">
-          {/* Summary cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
               <p className="text-xs text-gray-500 mb-1">Total Jenis Obat</p>
@@ -150,7 +146,6 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* fitur Quick Notification */}
         <div className="lg:col-span-1 bg-white rounded-xl border border-gray-100 p-5 shadow-sm flex flex-col max-h-[385px]">
           <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-100 shrink-0">
             <h3 className="text-sm font-bold text-text">Quick Notification</h3>
@@ -176,7 +171,6 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* fitur aktivitas terbaru */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
         <div className="flex items-center justify-between px-6 pt-5 pb-3">
           <h3 className="text-base font-semibold text-text">Aktivitas Terbaru</h3>

@@ -25,7 +25,6 @@ export default function Navbar({ onMenuToggle }) {
 
   return (
     <nav className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between">
-      {/* Left: Hamburger + spacer */}
       <div className="flex items-center gap-3 flex-1">
         <button
           onClick={onMenuToggle}
@@ -37,7 +36,6 @@ export default function Navbar({ onMenuToggle }) {
       </div>
 
       <div className="flex items-center gap-3 sm:gap-5">
-        {/* Notification bell */}
         <div className="relative">
           <button
             onClick={() => { setShowNotif(!showNotif); if (!showNotif) clearNotifications(); }}
@@ -80,7 +78,6 @@ export default function Navbar({ onMenuToggle }) {
           )}
         </div>
 
-        {/* User info */}
         <div className="flex items-center gap-3 pl-3 sm:pl-4 border-l border-gray-200">
           <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
             <User className="w-5 h-5 text-gray-500" />

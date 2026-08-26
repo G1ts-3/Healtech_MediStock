@@ -26,7 +26,6 @@ export default function KepalaDashboard() {
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Dashboard</h1>
@@ -102,7 +101,6 @@ export default function KepalaDashboard() {
           </ResponsiveContainer>
         </div>
 
-        {/* Pending approvals */}
         <div className="lg:col-span-2 bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
           <h3 className="text-base font-semibold text-text mb-4">Permintaan Menunggu Persetujuan</h3>
           <div className="space-y-3">

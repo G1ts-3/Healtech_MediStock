@@ -55,7 +55,6 @@ export default function DistribusiPage() {
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Tracking Distribusi</h1>
@@ -64,9 +63,7 @@ export default function DistribusiPage() {
         <DatePickerButton />
       </div>
 
-      {/* Filter & Search bar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-        {/* Filter tabs */}
         <div className="flex gap-2 flex-wrap">
           {['semua', 'diproses', 'dikirim', 'diterima'].map(tab => (
             <button
@@ -86,7 +83,6 @@ export default function DistribusiPage() {
           ))}
         </div>
 
-        {/* Search Bar */}
         <div className="relative w-full sm:w-80">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
@@ -202,7 +198,6 @@ export default function DistribusiPage() {
                       </div>
                     </div>
 
-                    {/* Timeline */}
                     <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Timeline Status</h4>
                     <div className="relative pl-6">
                       <div className="absolute left-2 top-2 bottom-2 w-0.5 bg-gray-200" />

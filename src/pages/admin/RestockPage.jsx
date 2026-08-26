@@ -80,7 +80,6 @@ export default function RestockPage() {
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Permintaan Restock & Smart Calculator</h1>
@@ -115,9 +114,7 @@ export default function RestockPage() {
         </div>
       )}
 
-      {/* Two-panel layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-        {/* Left panel - kalkulator */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 self-start">
           <h3 className="text-base font-bold text-primary border-b-2 border-primary pb-2 mb-5">Smart Restock Calculator</h3>
 
@@ -173,7 +170,6 @@ export default function RestockPage() {
                   </div> 
               </div>
 
-                {/* hasil kalkulasi untuk estimasi */}
                 <div className="bg-tertiary-light rounded-xl p-4 space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">Stok Saat Ini</span>
@@ -195,7 +191,6 @@ export default function RestockPage() {
                   </div>
                 </div>
 
-                {/* Request form */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Jumlah Permintaan</label>
                   <input
@@ -226,7 +221,6 @@ export default function RestockPage() {
           </div>
         </div>
 
-        {/* Right panel - Pending Requests */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
           <h3 className="text-base font-bold text-text mb-5">Riwayat Permintaan Restock</h3>
 

@@ -19,7 +19,6 @@ export default function GudangDashboard() {
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Dashboard</h1>
@@ -31,7 +30,6 @@ export default function GudangDashboard() {
         <DatePickerButton />
       </div>
 
-      {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3">
@@ -68,7 +66,6 @@ export default function GudangDashboard() {
         </div>
       </div>
 
-      {/* distribusi terkini */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
         <div className="px-6 pt-5 pb-3">
           <h3 className="text-base font-semibold text-text">Distribusi Terbaru</h3>

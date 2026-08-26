@@ -56,7 +56,6 @@ export default function Sidebar({ isOpen, onClose }) {
 
   return (
     <>
-      {/* Mobile/Tablet backdrop overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden sidebar-backdrop-enter"
@@ -64,7 +63,6 @@ export default function Sidebar({ isOpen, onClose }) {
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={`
           fixed left-0 top-0 bottom-0 w-[220px] bg-primary-dark flex flex-col z-50
@@ -73,7 +71,6 @@ export default function Sidebar({ isOpen, onClose }) {
           lg:translate-x-0
         `}
       >
-        {/* Logo + close button */}
         <div className="px-6 py-6 flex items-center justify-between">
           <h1 className="text-xl font-bold text-white tracking-tight">Medistok HUB</h1>
           <button
@@ -84,7 +81,6 @@ export default function Sidebar({ isOpen, onClose }) {
           </button>
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 px-3 space-y-1 mt-2">
           {links.map(link => (
             <NavLink
@@ -105,7 +101,6 @@ export default function Sidebar({ isOpen, onClose }) {
           ))}
         </nav>
 
-        {/* Bottom section */}
         <div className="px-3 pb-6 space-y-2">
           <button
             onClick={handleLogout}

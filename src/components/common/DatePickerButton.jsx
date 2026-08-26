@@ -140,7 +140,7 @@ export default function DatePickerButton({ initialDate, onDateChange, className 
 
   return (
     <div ref={containerRef} className={`relative flex items-center gap-2 ${className}`}>
-      {/* Trigger Button */}
+      
       <button
         type="button"
         onClick={togglePopover}
@@ -155,7 +155,6 @@ export default function DatePickerButton({ initialDate, onDateChange, className 
         <ChevronDown className={`w-4 h-4 text-gray-400 group-hover:text-primary transition-transform duration-300 shrink-0 ${isOpen ? 'rotate-180 text-primary' : ''}`} />
       </button>
 
-      {/* Reset to Today Quick Button */}
       {!isToday && (
         <button
           type="button"
@@ -168,10 +167,8 @@ export default function DatePickerButton({ initialDate, onDateChange, className 
         </button>
       )}
 
-      {/* Animated Calendar Popover */}
       {isOpen && (
         <div className="absolute right-0 top-full mt-2 z-50 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 w-72 md:w-80 animate-calendar-open transform origin-top-right">
-          {/* Header Month / Year Navigation */}
           <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100">
             <button
               type="button"
@@ -196,7 +193,6 @@ export default function DatePickerButton({ initialDate, onDateChange, className 
             </button>
           </div>
 
-          {/* Days Header */}
           <div className="grid grid-cols-7 gap-1 text-center mb-1">
             {DAY_NAMES.map((day, idx) => (
               <span key={idx} className="text-xs font-semibold text-gray-400 py-1 select-none">
@@ -205,7 +201,6 @@ export default function DatePickerButton({ initialDate, onDateChange, className 
             ))}
           </div>
 
-          {/* Day Grid */}
           <div className="grid grid-cols-7 gap-1">
             {calendarDays.map((cell, idx) => {
               const isSelected = cell.isoStr === selectedDate;
@@ -235,7 +230,6 @@ export default function DatePickerButton({ initialDate, onDateChange, className 
             })}
           </div>
 
-          {/* Footer Quick Actions */}
           <div className="flex items-center justify-between pt-3 mt-3 border-t border-gray-100 text-xs">
             <button
               type="button"

@@ -55,8 +55,7 @@ export default function DistribusiPage() {
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
-      {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Tracking Distribusi</h1>
           <p className="text-sm text-gray-500 mt-1">Pantau dan kelola status distribusi obat dari supplier ke gudang.</p>
@@ -64,9 +63,7 @@ export default function DistribusiPage() {
         <DatePickerButton />
       </div>
 
-      {/* Filter & Search bar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-        {/* Filter tabs */}
         <div className="flex gap-2 flex-wrap">
           {['semua', 'diproses', 'dikirim', 'diterima'].map(tab => (
             <button
@@ -86,7 +83,6 @@ export default function DistribusiPage() {
           ))}
         </div>
 
-        {/* Search Bar */}
         <div className="relative w-full sm:w-80">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
@@ -119,7 +115,7 @@ export default function DistribusiPage() {
                   className="p-5 cursor-pointer"
                   onClick={() => setExpandedId(isExpanded ? null : dist.id)}
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-4">
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${cfg.color}`}>
                         <cfg.icon className="w-5 h-5" />
@@ -129,7 +125,7 @@ export default function DistribusiPage() {
                         <p className="text-xs text-gray-400">{med?.name || dist.medicineId} • {dist.quantity} unit</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-wrap items-center gap-3">
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${cfg.color}`}>
                         {cfg.label}
                       </span>
@@ -183,7 +179,7 @@ export default function DistribusiPage() {
 
                 {isExpanded && (
                   <div className="border-t border-gray-100 px-5 py-4 bg-gray-50/50">
-                    <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                       <div>
                         <p className="text-xs text-gray-400">Supplier</p>
                         <p className="text-sm font-medium text-text">{supplier?.name || dist.fromSupplier}</p>
@@ -202,7 +198,6 @@ export default function DistribusiPage() {
                       </div>
                     </div>
 
-                    {/* Timeline */}
                     <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Timeline Status</h4>
                     <div className="relative pl-6">
                       <div className="absolute left-2 top-2 bottom-2 w-0.5 bg-gray-200" />

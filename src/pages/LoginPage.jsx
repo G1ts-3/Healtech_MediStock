@@ -34,16 +34,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleQuickLogin = (role) => {
-    const account = accounts.find(a => a.role === role);
-    if (account) {
-      setEmail(account.email);
-      setPassword(account.password);
-      setCurrentRole(account.role);
-      navigate(roleRedirects[account.role]);
-    }
-  };
-
   return (
     <div className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-[45%] bg-primary-dark flex-col justify-between p-12 relative overflow-hidden">
@@ -123,21 +113,6 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* (demo untuk login cepat tanpa memasukkan email dan password) */}
-          <div className="mt-8 pt-6 border-t border-gray-100">
-            <p className="text-xs text-gray-400 text-center mb-3">Quick Login (Demo)</p>
-            <div className="grid grid-cols-3 gap-2">
-              {accounts.map(acc => (
-                <button
-                  key={acc.role}
-                  onClick={() => handleQuickLogin(acc.role)}
-                  className="py-2 px-3 bg-tertiary-light text-primary text-xs font-medium rounded-lg hover:bg-primary-light hover:text-white transition-all"
-                >
-                  {acc.role === 'admin' ? 'Admin' : acc.role === 'kepala' ? 'Kepala' : 'Gudang'}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </div>

@@ -26,8 +26,7 @@ export default function KepalaDashboard() {
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
-      {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Dashboard</h1>
           <div className="mt-2">
@@ -38,7 +37,7 @@ export default function KepalaDashboard() {
         <DatePickerButton />
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
@@ -85,8 +84,8 @@ export default function KepalaDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-5 gap-6">
-        <div className="col-span-3 bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div className="lg:col-span-3 bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
           <h3 className="text-base font-semibold text-text mb-5">Status Stok per Kategori</h3>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={categoryData}>
@@ -102,8 +101,7 @@ export default function KepalaDashboard() {
           </ResponsiveContainer>
         </div>
 
-        {/* Pending approvals */}
-        <div className="col-span-2 bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
+        <div className="lg:col-span-2 bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
           <h3 className="text-base font-semibold text-text mb-4">Permintaan Menunggu Persetujuan</h3>
           <div className="space-y-3">
             {pendingRequests.length === 0 ? (

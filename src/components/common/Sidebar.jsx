@@ -10,6 +10,7 @@ import {
   Activity,
   LogOut,
   Headphones,
+  X,
 } from 'lucide-react';
 
 const adminLinks = [
@@ -38,7 +39,7 @@ const linksByRole = {
   gudang: gudangLinks,
 };
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   const { currentRole, setCurrentRole } = useApp();
   const navigate = useNavigate();
   const links = linksByRole[currentRole] || [];
@@ -46,34 +47,39 @@ export default function Sidebar() {
   const handleLogout = () => {
     setCurrentRole(null);
     navigate('/');
+    onClose?.();
+  };
+
+  const handleNavClick = () => {
+    onClose?.();
   };
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-primary-dark flex flex-col z-40">
-      {/* Logo */}
-      <div className="px-6 py-6">
-        <h1 className="text-xl font-bold text-white tracking-tight">Medistok HUB</h1>
-      </div>
+    <>
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden sidebar-backdrop-enter"
+          onClick={onClose}
+        />
+      )}
 
-      {/* Navigation */}
-      <nav className="flex-1 px-3 space-y-1 mt-2">
-        {links.map(link => (
-          <NavLink
-            key={link.to}
-            to={link.to}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                isActive
-                  ? 'bg-primary text-white shadow-md'
-                  : 'text-blue-200 hover:bg-primary/40 hover:text-white'
-              }`
-            }
+      <aside
+        className={`
+          fixed left-0 top-0 bottom-0 w-[220px] bg-primary-dark flex flex-col z-50
+          transition-transform duration-300 ease-in-out
+          ${isOpen ? 'translate-x-0 sidebar-drawer-enter' : '-translate-x-full'}
+          lg:translate-x-0
+        `}
+      >
+        <div className="px-6 py-6 flex items-center justify-between">
+          <h1 className="text-xl font-bold text-white tracking-tight">Medistok HUB</h1>
+          <button
+            onClick={onClose}
+            className="lg:hidden p-1 rounded-lg hover:bg-white/10 text-white/70 hover:text-white transition-colors"
           >
-            <link.icon className="w-[18px] h-[18px]" />
-            <span>{link.label}</span>
-          </NavLink>
-        ))}
-      </nav>
+            <X className="w-5 h-5" />
+          </button>
+        </div>
 
       {/* Bottom section */}
       <div className="px-3 pb-6 space-y-2">

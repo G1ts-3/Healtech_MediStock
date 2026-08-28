@@ -121,7 +121,7 @@ export default function AnalyticsPage() {
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Analytics</h1>
           <p className="text-sm text-gray-500 mt-1">Analisis tren pemakaian obat dan evaluasi distribusi stok.</p>
@@ -129,7 +129,7 @@ export default function AnalyticsPage() {
         <DatePickerButton />
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-all flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-blue-50 text-primary flex items-center justify-center shrink-0">
             <TrendingUp className="w-6 h-6" />
@@ -169,7 +169,7 @@ export default function AnalyticsPage() {
       </div>
 
       <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
           <div>
             <h3 className="text-base font-semibold text-text">Tren Pemakaian Obat (Bulanan)</h3>
             <p className="text-xs text-gray-400 mt-0.5">Riwayat penggunaan bulanan per jenis obat</p>

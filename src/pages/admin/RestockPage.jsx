@@ -12,6 +12,7 @@ export default function RestockPage() {
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [whatIfPercent, setWhatIfPercent] = useState(0);
   const audioRef = useRef(null);
 
   const today = new Date();
@@ -38,8 +39,27 @@ export default function RestockPage() {
     }
   }, [audioEnabled, kritisItems.length]);
 
+  useEffect(() => {
+    if (selectedMedicine) { 
+      setRequestQty(getAdjustedQty(selectedMedicine, seasonal, whatIfPercent).toString()); 
+    } 
+  }, [whatIfPercent]);
+
+  const getAdjustedQty = (med, isSeasonal, percent) => { 
+    const base = getRecommendedQty(med, isSeasonal); 
+    return Math.round(Math.max(base, 0) * (1 + percent / 100)); 
+  };
+
+  const getAdjustedDaysUntilStockout = (med, isSeasonal, percent) => {
+    const baseDailyUsage = isSeasonal ? med.dailyUsage * med.seasonalMultiplier : med.dailyUsage;
+    const adjustedDailyUsage = baseDailyUsage * (1 + percent / 100);
+    if (adjustedDailyUsage <= 0) return Infinity;
+    return Math.floor(med.currentStock / adjustedDailyUsage);
+  };
+
   const handleSelect = (med) => {
     setSelectedMedicine(med);
+    setWhatIfPercent(0);
     const rec = getRecommendedQty(med, seasonal);
     setRequestQty(Math.max(rec, 0).toString());
   };
@@ -60,8 +80,7 @@ export default function RestockPage() {
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
-      {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Permintaan Restock & Smart Calculator</h1>
           <p className="text-sm text-gray-500 mt-1">Hitung rekomendasi pengadaan barang secara otomatis dan kelola pengajuan ke Kepala Farmasi</p>
@@ -95,9 +114,7 @@ export default function RestockPage() {
         </div>
       )}
 
-      {/* Two-panel layout */}
-      <div className="grid grid-cols-2 gap-6 items-start">
-        {/* Left panel - kalkulator */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 self-start">
           <h3 className="text-base font-bold text-primary border-b-2 border-primary pb-2 mb-5">Smart Restock Calculator</h3>
 
@@ -140,25 +157,19 @@ export default function RestockPage() {
 
             {selectedMedicine && (
               <>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Skenario Pemakaian</label>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => { setSeasonal(false); setRequestQty(Math.max(getRecommendedQty(selectedMedicine, false), 0).toString()); }}
-                      className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${!seasonal ? 'bg-primary text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-                    >
-                      Normal
-                    </button>
-                    <button
-                      onClick={() => { setSeasonal(true); setRequestQty(Math.max(getRecommendedQty(selectedMedicine, true), 0).toString()); }}
-                      className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${seasonal ? 'bg-warning text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-                    >
-                      Musiman (×{selectedMedicine.seasonalMultiplier})
-                    </button>
-                  </div>
-                </div>
 
-                {/* hasil kalkulasi untuk estimasi */}
+              <div> 
+                <div className="flex items-center justify-between mb-2"> 
+                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider"> Simulasi What-If (Lonjakan Permintaan Musiman) </label> 
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${whatIfPercent > 0 ? 'bg-orange-100 text-orange-600' : whatIfPercent < 0 ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'}`}> 
+                  {whatIfPercent > 0 ? '+' : ''}{whatIfPercent}% {whatIfPercent > 0 ? 'Lonjakan' : whatIfPercent < 0 ? 'Penurunan' : ''} 
+                  </span> 
+                </div> <input type="range" min="-50" max="100" step="5" value={whatIfPercent} onChange={(e) => setWhatIfPercent(Number(e.target.value))} className="w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer accent-primary" /> 
+                  <div className="flex justify-between text-[10px] text-gray-400 mt-1"> 
+                    <span>-50%</span> <span>0%</span> <span>+100%</span> 
+                  </div> 
+              </div>
+
                 <div className="bg-tertiary-light rounded-xl p-4 space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">Stok Saat Ini</span>
@@ -170,8 +181,8 @@ export default function RestockPage() {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">Estimasi Habis</span>
-                    <span className={`font-bold ${getDaysUntilStockout(selectedMedicine, seasonal) <= 3 ? 'text-error' : getDaysUntilStockout(selectedMedicine, seasonal) <= 7 ? 'text-warning' : 'text-success'}`}>
-                      {getDaysUntilStockout(selectedMedicine, seasonal)} hari
+                    <span className={`font-bold ${getAdjustedDaysUntilStockout(selectedMedicine, seasonal, whatIfPercent) <= 3 ? 'text-error' : getAdjustedDaysUntilStockout(selectedMedicine, seasonal, whatIfPercent) <= 7 ? 'text-warning' : 'text-success'}`}>
+                      {getAdjustedDaysUntilStockout(selectedMedicine, seasonal, whatIfPercent)} hari
                     </span>
                   </div>
                   <div className="flex justify-between text-sm border-t border-blue-200 pt-3">
@@ -180,7 +191,6 @@ export default function RestockPage() {
                   </div>
                 </div>
 
-                {/* Request form */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Jumlah Permintaan</label>
                   <input
@@ -211,7 +221,6 @@ export default function RestockPage() {
           </div>
         </div>
 
-        {/* Right panel - Pending Requests */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
           <h3 className="text-base font-bold text-text mb-5">Riwayat Permintaan Restock</h3>
 

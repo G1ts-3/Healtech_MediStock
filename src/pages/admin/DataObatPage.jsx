@@ -176,8 +176,7 @@ export default function DataObatPage() {
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.3s_ease]">
-      {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Monitoring Stok</h1>
           <div className="mt-2">
@@ -188,7 +187,7 @@ export default function DataObatPage() {
         <DatePickerButton />
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
           <p className="text-xs text-gray-500 mb-1">Total Jenis Obat</p>
           <p className="text-2xl font-bold text-text">{medicines.length.toLocaleString('id-ID')} <span className="text-sm font-normal text-gray-400">Item</span></p>
@@ -253,9 +252,9 @@ export default function DataObatPage() {
         </div>
       </div>
 
-      {/* Table */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <table className="w-full">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[800px]">
           <thead>
             <tr className="bg-gray-50/50 border-b border-gray-100">
               <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3 cursor-pointer select-none group" onClick={() => handleSort('id')}>
@@ -330,9 +329,9 @@ export default function DataObatPage() {
             })}
           </tbody>
         </table>
+        </div>
       </div>
 
-      {/* Detail Modal */}
       {detailMedicine && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={() => setDetailMedicine(null)}>
           <div className="bg-white rounded-2xl w-full max-w-lg p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
@@ -372,7 +371,6 @@ export default function DataObatPage() {
         </div>
       )}
 
-      {/* Add/Edit Modal */}
       {showModal && (
         <MedicineFormModal
           medicine={editingMedicine}
@@ -382,7 +380,6 @@ export default function DataObatPage() {
         />
       )}
 
-      {/* Delete Confirmation */}
       {deleteConfirm && deleteConfirm !== 'bulk' && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl text-center">
@@ -402,7 +399,6 @@ export default function DataObatPage() {
   );
 }
 
-/* Medicine Form Modal Component */
 function MedicineFormModal({ medicine, suppliers, onSave, onClose }) {
   const [form, setForm] = useState({
     name: medicine?.name || '',
@@ -463,7 +459,7 @@ function MedicineFormModal({ medicine, suppliers, onSave, onClose }) {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1">Nama Obat *</label>
               <input value={form.name} onChange={(e) => handleChange('name', e.target.value)} className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-light ${errors.name ? 'border-error' : 'border-gray-200'}`} />

@@ -1,4 +1,4 @@
-import { Bell, ChevronDown, User } from 'lucide-react';
+import { Bell, ChevronDown, User, Menu } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -15,7 +15,7 @@ const roleSubtitles = {
   gudang: 'Staff Gudang',
 };
 
-export default function Navbar() {
+export default function Navbar({ onMenuToggle }) {
   const { currentRole, notifications, clearNotifications } = useApp();
   const [showNotif, setShowNotif] = useState(false);
   const location = useLocation();
@@ -24,13 +24,18 @@ export default function Navbar() {
   const isAdminDashboard = location.pathname === '/admin/dashboard';
 
   return (
-    <nav className="sticky top-0 z-30 bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
-      {/* Page title area - filled by page content */}
-      <div className="flex items-center gap-4 flex-1">
+    <nav className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div className="flex items-center gap-3 flex-1">
+        <button
+          onClick={onMenuToggle}
+          className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-600"
+          aria-label="Toggle menu"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
       </div>
 
-      <div className="flex items-center gap-5">
-        {/* Notification bell */}
+      <div className="flex items-center gap-3 sm:gap-5">
         <div className="relative">
           <button
             onClick={() => { setShowNotif(!showNotif); if (!showNotif) clearNotifications(); }}
@@ -45,7 +50,7 @@ export default function Navbar() {
           </button>
 
           {showNotif && (
-            <div className="absolute right-0 top-12 w-80 bg-white rounded-xl shadow-xl border border-gray-100 z-50 max-h-96 overflow-y-auto">
+            <div className="absolute right-0 top-12 w-72 sm:w-80 bg-white rounded-xl shadow-xl border border-gray-100 z-50 max-h-96 overflow-y-auto">
               <div className="p-3 border-b border-gray-100 font-semibold text-sm">Notifikasi</div>
               {notifications.length === 0 ? (
                 <div className="p-4 text-center text-gray-400 text-sm">Tidak ada notifikasi</div>
@@ -73,12 +78,11 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* User info */}
-        <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
+        <div className="flex items-center gap-3 pl-3 sm:pl-4 border-l border-gray-200">
           <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
             <User className="w-5 h-5 text-gray-500" />
           </div>
-          <div className="text-right">
+          <div className="text-right hidden sm:block">
             <p className="text-sm font-semibold text-text leading-tight">{roleLabels[currentRole] || 'User'}</p>
             <p className="text-[11px] text-gray-400">{roleSubtitles[currentRole] || ''}</p>
           </div>

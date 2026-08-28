@@ -71,16 +71,7 @@ export default function Sidebar({ isOpen, onClose }) {
           lg:translate-x-0
         `}
       >
-        <div className="px-6 py-6 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-white tracking-tight">Medistok HUB</h1>
-          <button
-            onClick={onClose}
-            className="lg:hidden p-1 rounded-lg hover:bg-white/10 text-white/70 hover:text-white transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
+        {/* Navigation */}
         <nav className="flex-1 px-3 space-y-1 mt-2">
           {links.map(link => (
             <NavLink
@@ -88,9 +79,10 @@ export default function Sidebar({ isOpen, onClose }) {
               to={link.to}
               onClick={handleNavClick}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${isActive
-                  ? 'bg-primary text-white shadow-md'
-                  : 'text-blue-200 hover:bg-primary/40 hover:text-white'
+                `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  isActive
+                    ? 'bg-primary text-white shadow-md'
+                    : 'text-blue-200 hover:bg-primary/40 hover:text-white'
                 }`
               }
             >
@@ -100,6 +92,7 @@ export default function Sidebar({ isOpen, onClose }) {
           ))}
         </nav>
 
+        {/* Bottom section */}
         <div className="px-3 pb-6 space-y-2">
           <button
             onClick={handleLogout}

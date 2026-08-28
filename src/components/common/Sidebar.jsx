@@ -71,16 +71,6 @@ export default function Sidebar({ isOpen, onClose }) {
           lg:translate-x-0
         `}
       >
-        <div className="px-6 py-6 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-white tracking-tight">Medistok HUB</h1>
-          <button
-            onClick={onClose}
-            className="lg:hidden p-1 rounded-lg hover:bg-white/10 text-white/70 hover:text-white transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
         {/* Navigation */}
         <nav className="flex-1 px-3 space-y-1 mt-2">
           {links.map(link => (

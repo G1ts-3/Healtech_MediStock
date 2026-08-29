@@ -20,7 +20,6 @@ export default function MonitoringPage() {
     return matchSearch && matchStatus && matchCategory;
   });
 
-  // Sort
   filtered = [...filtered].sort((a, b) => {
     let valA, valB;
     if (sortField === 'daysLeft') {

@@ -41,14 +41,14 @@ export function AppProvider({ children }) {
   const [restockRequests, setRestockRequests] = useState(() => loadFromStorage(STORAGE_KEYS.restockRequests, restockRequestsData));
   const [notifications, setNotifications] = useState(() => loadFromStorage(STORAGE_KEYS.notifications, []));
 
-  // Persist to localStorage on change
+  // simpan ke localstorage pas ada perubahan
   useEffect(() => { saveToStorage(STORAGE_KEYS.role, currentRole); }, [currentRole]);
   useEffect(() => { saveToStorage(STORAGE_KEYS.medicines, medicines); }, [medicines]);
   useEffect(() => { saveToStorage(STORAGE_KEYS.distributions, distributions); }, [distributions]);
   useEffect(() => { saveToStorage(STORAGE_KEYS.restockRequests, restockRequests); }, [restockRequests]);
   useEffect(() => { saveToStorage(STORAGE_KEYS.notifications, notifications); }, [notifications]);
 
-  // Add notification
+  // nambahin notifikasi
   const addNotification = useCallback((type, message, by) => {
     const now = new Date();
     const newNotif = {
@@ -67,7 +67,7 @@ export function AppProvider({ children }) {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   }, []);
 
-  // Helper: get stock status
+  // status stok
   const getStockStatus = useCallback((medicine) => {
     if (!medicine) return 'aman';
     if (Number(medicine.currentStock) <= Number(medicine.minStock) * 0.3) return 'kritis';
@@ -75,7 +75,7 @@ export function AppProvider({ children }) {
     return 'aman';
   }, []);
 
-  // Helper: get FEFO status based on days until expiry
+  // status fefo berdasarkan sisa hari expired
   const getFEFOStatus = useCallback((medicine) => {
     const today = new Date();
     const expiry = new Date(medicine.expiryDate);
@@ -85,14 +85,14 @@ export function AppProvider({ children }) {
     return 'aman';
   }, []);
 
-  // Helper: estimate days until stockout
+  // estimasi sisa hari sampe stok abis
   const getDaysUntilStockout = useCallback((medicine, seasonal = false) => {
     const usage = seasonal ? medicine.dailyUsage * medicine.seasonalMultiplier : medicine.dailyUsage;
     if (usage <= 0) return Infinity;
     return Math.floor(medicine.currentStock / usage);
   }, []);
 
-  // Helper: recommended restock qty
+  // rekomendasi jumlah restock
   const getRecommendedQty = useCallback((medicine, seasonal = false) => {
     const usage = seasonal ? medicine.dailyUsage * medicine.seasonalMultiplier : medicine.dailyUsage;
     const supplierObj = suppliers.find(s => s.id === medicine.supplier);
@@ -101,20 +101,20 @@ export function AppProvider({ children }) {
     return Math.ceil(usage * (leadTime + safetyBuffer + 30)) - medicine.currentStock;
   }, [suppliers]);
 
-  // CRUD: Add medicine
+  // tambah data obat
   const addMedicine = useCallback((medicine) => {
     const newMedicine = { ...medicine, id: `OBT-${String(medicines.length + 1).padStart(3, '0')}` };
     setMedicines(prev => [...prev, newMedicine]);
     addNotification('Data Obat', `Data obat ${medicine.name} ditambahkan`, 'Admin Farmasi');
   }, [medicines.length]);
 
-  // CRUD: Update medicine
+  // update data obat
   const updateMedicine = useCallback((id, updates) => {
     setMedicines(prev => prev.map(m => m.id === id ? { ...m, ...updates } : m));
     addNotification('Data Obat', `Data obat ${updates.name || id} diperbarui`, 'Admin Farmasi');
   }, []);
 
-  // CRUD: Delete medicine
+  // hapus data obat
   const deleteMedicine = useCallback((id) => {
     setMedicines(prev => {
       const medicine = prev.find(m => m.id === id);
@@ -123,7 +123,7 @@ export function AppProvider({ children }) {
     });
   }, []);
 
-  // Create restock request
+  // buat pengajuan restock
   const createRestockRequest = useCallback((medicineId, requestedQty, notes = '') => {
     const medicine = medicines.find(m => m.id === medicineId);
     if (!medicine) return;
@@ -147,14 +147,14 @@ export function AppProvider({ children }) {
     addNotification('Restock', `Permintaan restock ${medicine.name} diajukan`, 'Admin Farmasi');
   }, [medicines, restockRequests.length, getStockStatus, getRecommendedQty]);
 
-  // Auto-sync medicine stock for approved restock requests if stock is still critical
+  // sinkron otomatis stok obat buat pengajuan restock yg disetujui kalo stok masih kritis
   useEffect(() => {
     const approvedRequests = restockRequests.filter(r => r.status === 'disetujui');
     if (approvedRequests.length > 0) {
       setMedicines(prevMeds => {
         let changed = false;
         const updatedMeds = prevMeds.map(m => {
-          // Check if medicine is critical but has approved restock requests
+          // cek apakah obat kritis tapi ada pengajuan restock yg disetujui
           const approvedForMed = approvedRequests.filter(r => r.medicineId === m.id);
           if (approvedForMed.length > 0 && Number(m.currentStock) <= Number(m.minStock) * 0.3) {
             const addedQty = approvedForMed.reduce((sum, r) => sum + Number(r.requestedQty), 0);
@@ -168,7 +168,7 @@ export function AppProvider({ children }) {
     }
   }, [restockRequests]);
 
-  // Approve/Reject restock
+  // setujui atau tolak restock
   const updateRestockStatus = useCallback((requestId, status, notes = '') => {
     let targetReq = null;
     
@@ -198,7 +198,7 @@ export function AppProvider({ children }) {
         };
         setDistributions(prev => [...prev, newDist]);
 
-        // Increment medicine stock so it is no longer critical
+        // nambahin stok obat agar tidak kritis 
         setMedicines(prevMeds => prevMeds.map(m => {
           if (m.id === request.medicineId) {
             const newStock = Number(m.currentStock) + Number(request.requestedQty);
@@ -213,7 +213,7 @@ export function AppProvider({ children }) {
     }
   }, [restockRequests, medicines, distributions.length, addNotification]);
 
-  // Update distribution status
+  // update status distribusi
   const updateDistributionStatus = useCallback((distId, newStatus) => {
     let targetDist = null;
     
@@ -238,7 +238,7 @@ export function AppProvider({ children }) {
       });
     });
 
-    // When status changes to 'diterima', increment currentStock for the medicine
+    // pas status berubah jd 'diterima', nambahin currentstock buat obatnya
     if (newStatus === 'diterima' && targetDist && targetDist.status !== 'diterima') {
       setMedicines(prevMeds => prevMeds.map(m => {
         if (m.id === targetDist.medicineId) {
@@ -252,7 +252,7 @@ export function AppProvider({ children }) {
     addNotification('Distribusi', `Distribusi #${distId} status diperbarui ke ${newStatus}`, 'Gudang Farmasi');
   }, [addNotification]);
 
-  // Stats
+  // statistik
   const stats = {
     totalMedicines: medicines.length,
     stockAman: medicines.filter(m => getStockStatus(m) === 'aman').length,

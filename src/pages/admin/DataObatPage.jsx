@@ -60,7 +60,6 @@ export default function DataObatPage() {
     return 0;
   });
 
-  // style buat xls
   const handleExportCSV = () => {
     const headers = [
       'Kode Obat',

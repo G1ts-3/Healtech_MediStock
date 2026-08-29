@@ -14,18 +14,15 @@ export default function AdminDashboard() {
   const today = new Date();
   const dateStr = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-  // Generate usage trend data
   const generateChartData = () => {
     const totalByMonth = months.map((month, idx) => {
       const total = medicines.reduce((sum, m) => sum + (m.monthlyUsageHistory[idx] || 0), 0);
       return { name: `${20 + idx} Mei`, total };
     });
-    // Show last N data points based on range
     const count = chartRange === '7' ? 7 : chartRange === '14' ? 12 : 12;
     return totalByMonth.slice(0, count);
   };
 
-  // Build activities from notifications + static data
   const activities = [
     { time: '10:30', type: 'Stok Kritis', detail: 'Paracetamol 500mg stok tersisa 15 unit', by: 'Admin Farmasi', typeClass: 'bg-red-100 text-error' },
     { time: '09:15', type: 'Kadaluarsa', detail: 'Amoxicillin 500mg akan kadaluarsa dalam 15 hari', by: 'Sistem', typeClass: 'bg-yellow-100 text-yellow-700' },
@@ -34,7 +31,6 @@ export default function AdminDashboard() {
     { time: '24 Mei 14:10', type: 'Data Obat', detail: 'Data obat Ibuprofen 400mg diperbarui', by: 'Admin Farmasi', typeClass: 'bg-purple-100 text-purple-600' },
   ];
 
-  // Quick notifications (merged with AppContext notifications and fallback notifications)
   const defaultNotifs = [
     { type: 'Restock', title: 'Permintaan restock #RST-1021', detail: 'Telah disetujui oleh Kepala Farmasi', time: '09:00', by: 'Kepala Farmasi', typeClass: 'bg-blue-100 text-primary' },
     { type: 'Distribusi', title: 'Distribusi obat #DST-7789', detail: 'Obat telah tiba di Gudang Utama', time: '08:30', by: 'Staff Gudang', typeClass: 'bg-green-100 text-secondary' },

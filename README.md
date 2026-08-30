@@ -46,6 +46,7 @@ Untuk memastikan Node.js dan npm terpasang:
 
 node --version
 npm --version
+
 2. Clone Repository
 
 Clone repository MediStock HUB menggunakan Git:

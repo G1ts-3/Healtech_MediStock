@@ -3,9 +3,9 @@ MediStock HUB — Sistem Manajemen Inventory & Restock Obat Farmasi
 **oleh Tim Ikutajalah**
 
 **Anggota Tim**
-1	Muhammad Akmal Ali	Ketua
-2	Raghid Muhammad Arjono	Anggota
-3	Rafly Putra Sanjaya	Anggota
+1.	Muhammad Akmal Ali	Ketua
+2.	Raghid Muhammad Arjono	Anggota
+3.	Rafly Putra Sanjaya	Anggota
 
 ----------------------
 

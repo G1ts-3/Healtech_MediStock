@@ -25,12 +25,12 @@ Kepala Farmasi — memantau kondisi persediaan dan melakukan persetujuan atau pe
 ---------------
 
 **Fitur Utama**
-Multi-Role Dashboard untuk Admin Farmasi, Gudang Utama, dan Kepala Farmasi.
-FEFO Management untuk memprioritaskan obat berdasarkan tanggal kedaluwarsa.
-Clinical Alert Mode untuk memberikan peringatan ketika stok obat berada pada kondisi kritis.
-Smart Restock Calculator untuk menghitung kebutuhan restock secara otomatis.
-Pencarian dan Sorting berdasarkan nama, kode, kategori, stok, status stok, dan tanggal kedaluwarsa.
-Ekspor Data inventory ke file Microsoft Excel.
+- Multi-Role Dashboard untuk Admin Farmasi, Gudang Utama, dan Kepala Farmasi.
+- FEFO Management untuk memprioritaskan obat berdasarkan tanggal kedaluwarsa.
+- Clinical Alert Mode untuk memberikan peringatan ketika stok obat berada pada kondisi kritis.
+- Smart Restock Calculator untuk menghitung kebutuhan restock secara otomatis.
+- Pencarian dan Sorting berdasarkan nama, kode, kategori, stok, status stok, dan tanggal kedaluwarsa.
+- Ekspor Data inventory ke file Microsoft Excel.
 
 -----------------------------
 

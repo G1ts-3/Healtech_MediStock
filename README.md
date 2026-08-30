@@ -35,11 +35,11 @@ Kepala Farmasi — memantau kondisi persediaan dan melakukan persetujuan atau pe
 -----------------------------
 
 **Teknologi yang Digunakan**
-Node.js — Runtime environment
-npm — Package manager
-React.js — Framework/library untuk antarmuka aplikasi
-JavaScript — Bahasa pemrograman
-HTML & CSS — Struktur dan styling antarmuka
+1. Node.js — Runtime environment
+2. npm — Package manager
+3. React.js — Framework/library untuk antarmuka aplikasi
+4. JavaScript — Bahasa pemrograman
+5. HTML & CSS — Struktur dan styling antarmuka
 
 ---------------------------------------
 
@@ -93,16 +93,3 @@ http://localhost:5173
 
 Buka alamat tersebut menggunakan browser.
 
-----------------------
-
-**Struktur Direktori**
-Healtech_MediStock/
-├── src/
-│   ├── components/       # Komponen UI yang dapat digunakan kembali
-│   ├── context/          # State management dan logic aplikasi
-│   ├── data/             # Data obat, distribusi, restock, dan supplier
-│   ├── pages/            # Halaman aplikasi berdasarkan role pengguna
-│   ├── App.jsx           # Routing dan layout utama aplikasi
-│   └── main.jsx          # Entry point aplikasi
-├── package.json
-└── README.md
